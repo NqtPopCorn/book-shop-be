@@ -1,4 +1,4 @@
-const homeRouter = require("./homeRouter");
+const homeRouter = require("./home");
 
 let initWebRoutes = (app) => {
     return app.use("/", homeRouter);
