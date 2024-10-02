@@ -5,10 +5,19 @@ import initWebRoutes from "./routes";
 
 require("dotenv").config();
 
+
+
 let app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+//cors config
+const cors = require("cors");
+const corsOptions = {
+    origin: "http://localhost:3000",
+    optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 viewEngine(app);
 initWebRoutes(app);
