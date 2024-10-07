@@ -1,6 +1,10 @@
 import bcrypt, { hash } from "bcryptjs";
+import jwt from "jsonwebtoken";
 import db from "../models";
+require("dotenv").config();
+
 const salt = bcrypt.genSaltSync(10);
+const secretKey = process.env.API_SECRET_KEY;
 
 let login = (email, password) => {
     return new Promise(async (resolve, reject) => {
@@ -11,17 +15,39 @@ let login = (email, password) => {
             if (user) {
                 let check = await bcrypt.compare(password, user.password);
                 if (check) {
+                    // Generate a JWT token
+                    const token = jwt.sign(
+                        {
+                            account_id: user.account_id,
+                            username: user.username,
+                        },
+                        secretKey,
+                        { expiresIn: "1d" }
+                    );
                     resolve({
-                        message: "Login success",
+                        status: 200,
+                        data: {
+                            message: "Login success",
+                            account_id: user.account_id,
+                            email: user.email,
+                            username: user.username,
+                            token: token,
+                        },
                     });
                 } else {
                     resolve({
-                        message: "Wrong password",
+                        status: 401,
+                        data: {
+                            message: "Wrong password",
+                        },
                     });
                 }
             }
             resolve({
-                message: "User not found",
+                status: 401,
+                data: {
+                    message: "Username is not exist",
+                },
             });
         } catch (error) {
             reject(error);
@@ -47,6 +73,17 @@ let register = (data) => {
     });
 };
 
+let verifyToken = (token) => {
+    return new Promise((resolve, reject) => {
+        try {
+            let decoded = jwt.verify(token, secretKey);
+            resolve(decoded);
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    });
+};
 
 let createNewUser = (user) => {
     return new Promise(async (resolve, reject) => {
@@ -158,4 +195,5 @@ module.exports = {
     getUserInfoById: getUserInfoById,
     updateUserData: updateUserData,
     deleteUserById: deleteUserById,
+    verifyToken: verifyToken,
 };

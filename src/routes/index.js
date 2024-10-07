@@ -5,9 +5,9 @@ const express = require("express");
 const path = require("path");
 
 let initWebRoutes = (app) => {
-    app.use("/auth", authRouter);
+    app.use("/api/auth", authRouter);
     app.use("/", express.static(path.resolve(__dirname, "../../public")));
-    app.use("/book", bookRouter);
+    app.use("/api/book", bookRouter);
 
     return app.use("/", homeRouter);
 };
