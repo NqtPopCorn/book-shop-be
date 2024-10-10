@@ -2,19 +2,16 @@ import express from "express";
 import bodyParser from "body-parser";
 import viewEngine from "./config/viewEngine";
 import initWebRoutes from "./routes";
-
 require("dotenv").config();
 
-
-
 let app = express();
-
+//config parser body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //cors config
 const cors = require("cors");
 const corsOptions = {
-    origin: "http://localhost:3000",
+    origin: process.env.FE_PORT,
     optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
