@@ -2,6 +2,17 @@ import authService from "../services/authService";
 
 let handleLogin = async (req, res) => {
   try {
+    //get authentication token from client header
+    let token = req.headers["authorization"];
+    if (token) {
+      let response = await authService.loginWithToken(token);
+      return res.status(response.status).json({
+        user: response.user,
+        message: response.message,
+        token: response.token,
+      });
+    }
+    //get email and password from client request
     let email = req.body.email;
     let password = req.body.password;
     if (!email || !password) {

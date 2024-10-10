@@ -116,6 +116,50 @@ let getUserByToken = (token) => {
   });
 };
 
+let loginWithToken = (token) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Verify token
+      let decoded = jwt.verify(token, secretKey);
+      if (decoded) {
+        //if token is valid
+        //find user by account_id
+        let user = await db.accounts.findOne({
+          where: { account_id: decoded.account_id },
+          include: [
+            {
+              model: db.roles,
+              as: "role",
+              attributes: ["role_name"],
+            },
+          ],
+        });
+        //create new token
+        const newToken = jwt.sign(
+          {
+            account_id: decoded.account_id,
+            username: decoded.username,
+          },
+          secretKey,
+          { expiresIn: "1d" }
+        );
+        //update last logins
+        user.last_login = new Date();
+        await user.save();
+        const { username, account_id, email, role, phone_number } = user;
+        resolve({
+          status: 200,
+          message: "Login success",
+          user: { username, account_id, email, role, phone_number },
+          token: newToken,
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 let createNewUser = (user) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -216,7 +260,7 @@ let deleteUserById = (userId) => {
     }
   });
 };
-
+////
 module.exports = {
   register,
   login: login,
@@ -227,4 +271,5 @@ module.exports = {
   updateUserData: updateUserData,
   deleteUserById: deleteUserById,
   getUserByToken: getUserByToken,
+  loginWithToken: loginWithToken,
 };

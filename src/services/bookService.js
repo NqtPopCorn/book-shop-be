@@ -1,6 +1,7 @@
 import { name } from "ejs";
 import db from "../models";
 import Sequelize, { where } from "sequelize";
+import req from "express/lib/request";
 require("dotenv").config();
 const baseUrl = `http://${process.env.HOSTNAME}/img/`;
 
@@ -57,25 +58,39 @@ let getBookById = (id) => {
 };
 
 let getPage = (page, limit) => {
+  page = parseInt(page);
+  limit = parseInt(limit);
+
   return new Promise(async (resolve, reject) => {
     try {
-      let books = await db.books.findAndCountAll({
-        raw: true,
-        limit: limit,
+      let books = await db.books.findAll({
         offset: (page - 1) * limit,
+        include: [
+          {
+            model: db.bookimages,
+            as: "image",
+            attributes: [
+              [
+                db.sequelize.fn(
+                  "CONCAT",
+                  baseUrl,
+                  db.sequelize.col("image.url")
+                ),
+                "url",
+              ],
+            ],
+            where: { is_main: 1 },
+            required: false,
+          },
+        ],
+        limit: limit,
       });
 
-      let image = await db.bookimages.findAll({
-        raw: true,
-        where: { is_main: 1 },
-      });
-
-      for (let i = 0; i < books.rows.length; i++) {
-        books.rows[i].image = image[i].url;
-      }
+      let num_product = await db.books.count();
+      let total_page = Math.ceil(num_product / limit);
 
       if (books) {
-        resolve(books);
+        resolve({ books, total_page });
       } else {
         resolve({ message: "Book not found" });
       }
