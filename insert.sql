@@ -49,7 +49,7 @@ INSERT INTO `bookimages` (`bookImage_id`, `book_id`, `url`, `is_main`, `createdA
 -- Dumping data for table bansach.books: ~2 rows (approximately)
 INSERT INTO `books` (`book_id`, `title`, `num_page`, `size`, `weight`, `publication_year`, `price_receipt`, `profit_rate`, `decription`, `stock_quantity`, `status_id`, `language_id`, `publisher_id`, `genre_id`, `discount_id`, `cover_format_id`, `createdAt`, `updatedAt`) VALUES
 	(1, 'The Great Adventure', 300, '20x15cm', '500g', 2020, 100000.00, 0.20, 'A great adventure book.', 50, 1, 1, 1, 1, NULL, 1, '2024-09-30 08:51:54', '2024-09-30 08:51:54'),
-	(2, 'The Choosen One', 100, '20x10cm', '300g', 2024, 50000.00, 0.20, 'truong\'s book', 100, 1, 2, 2, 3, 2, 2, '2024-09-30 09:45:25', '2024-09-30 09:45:25');
+	(2, 'The Choosen One', 100, '20x10cm', '300g', 2024, 50000.00, 0.20, 'truong book', 100, 1, 2, 2, 3, 2, 2, '2024-09-30 09:45:25', '2024-09-30 09:45:25');
 
 -- Dumping data for table bansach.bookstatus: ~3 rows (approximately)
 INSERT INTO `bookstatus` (`id`, `status_name`, `createdAt`, `updatedAt`) VALUES
