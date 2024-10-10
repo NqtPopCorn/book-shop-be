@@ -3,5 +3,6 @@
 /.idea
 .idea/
 .env
-api.http
 cmd.notes
+
+.prettierrc
