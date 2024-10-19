@@ -27,11 +27,11 @@ module.exports = function (sequelize, DataTypes) {
       },
       role_id: {
         type: DataTypes.INTEGER,
-        allowNull: true,
         references: {
           model: "roles",
           key: "role_id",
         },
+        defaultValue: 3, //customer
       },
       status: {
         type: DataTypes.INTEGER,

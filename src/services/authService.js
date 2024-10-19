@@ -74,7 +74,7 @@ let register = (data) => {
       });
       if (user) throw new Error("Email is already exist");
       let hashedPassword = await hashUserPassword(data.password);
-      await db.accounts.create({
+      let newAccount = await db.accounts.create({
         email: data.email,
         password: hashedPassword,
         address: data.address,
@@ -82,6 +82,15 @@ let register = (data) => {
         phone_number: data.phoneNumber,
         role_id: 3, //customer
         status: 1,
+      });
+      //tao customer
+      await db.customers.create({
+        email: data.email,
+        firstName: "",
+        lastName: "",
+        address: data.address,
+        phone_number: data.phoneNumber,
+        account_id: newAccount.account_id,
       });
       resolve("Create new user success");
     } catch (error) {
