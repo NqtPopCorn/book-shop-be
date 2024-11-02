@@ -28,5 +28,11 @@ router.post(
   bookController.handleUpdate
 );
 router.get("/reference/all", bookController.handleGetAllReferences);
+router.post(
+  "/",
+  checkAdminMiddleware,
+  upload.array("new_images", 10),
+  bookController.handleCreate
+);
 
 module.exports = router;

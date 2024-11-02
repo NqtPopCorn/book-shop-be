@@ -44,7 +44,7 @@ Object.keys(db).forEach((modelName) => {
   }
 });
 
-//dung khi muon sua database sau khi sua model
+// dung khi muon sua database sau khi sua model
 // (async () => {
 //   try {
 //     await sequelize.authenticate();

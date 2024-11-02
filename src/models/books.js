@@ -29,22 +29,14 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      price_receipt: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: true,
-      },
-      profit_rate: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: true,
+      sale_price: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0.0,
       },
       decription: {
         type: DataTypes.STRING(255),
         allowNull: true,
-      },
-      stock_quantity: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0,
       },
       status_id: {
         type: DataTypes.INTEGER,
@@ -146,10 +138,17 @@ module.exports = function (sequelize, DataTypes) {
       as: "alt_images",
       foreignKey: "book_id",
     });
+    books.hasMany(models.batches, { foreignKey: "book_id", as: "stock" });
     books.belongsToMany(models.authors, {
       through: "bookauthors",
       foreignKey: "book_id",
       otherKey: "author_id",
+    });
+    books.belongsToMany(models.goodsreceipt, {
+      through: models.goodsreceiptdetails,
+      foreignKey: "book_id",
+      otherKey: "receipt_id",
+      as: "receipts",
     });
     books.belongsTo(models.bookstatus, {
       as: "status",

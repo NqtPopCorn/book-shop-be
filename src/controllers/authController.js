@@ -1,3 +1,4 @@
+import e from "cors";
 import authService from "../services/authService";
 
 let handleLogin = async (req, res) => {
@@ -28,7 +29,8 @@ let handleLogin = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      message: "Login failed",
+      tip: "Check database connection",
+      error: error,
     });
   }
 };

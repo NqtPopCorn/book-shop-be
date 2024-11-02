@@ -1,76 +1,15 @@
-import { name } from "ejs";
+import e from "cors";
 import db from "../models";
-import Sequelize, { where } from "sequelize";
+import Sequelize, { or, where } from "sequelize";
 require("dotenv").config();
 const baseUrl = `http://${process.env.HOSTNAME}/img/`;
-const include = [
-  {
-    model: db.bookimages,
-    as: "image",
-    attributes: [
-      [
-        db.sequelize.fn("CONCAT", baseUrl, db.sequelize.col("image.url")),
-        "url",
-      ],
-      "is_main",
-      "bookImage_id",
-    ],
-    where: { is_main: 1 },
-    required: false,
-  },
-  {
-    model: db.bookimages,
-    as: "alt_images",
-    attributes: [
-      [
-        db.sequelize.fn("CONCAT", baseUrl, db.sequelize.col("alt_images.url")),
-        "url",
-      ],
-      "is_main",
-      "bookImage_id",
-    ],
-    where: { is_main: 0 },
-    required: false,
-  },
-  {
-    model: db.genres,
-    as: "genre",
-    attributes: ["name"],
-  },
-  {
-    model: db.languages,
-    as: "language",
-    attributes: ["language_name", "language_code"],
-  },
-  {
-    model: db.publishers,
-    as: "publisher",
-    attributes: ["name"],
-  },
-  {
-    model: db.bookdiscount,
-    as: "discount",
-    attributes: ["discount_value", "discount_type"],
-    required: false,
-  },
-  {
-    model: db.authors,
-    as: "authors",
-    attributes: ["name"],
-    through: { attributes: [] },
-  },
-  {
-    model: db.bookstatus,
-    as: "status",
-    attributes: ["status_name"],
-  },
-];
 
 let getBookById = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
       let book = await db.books.findOne({
         include: include,
+        attributes: attributes,
         where: {
           book_id: id,
         },
@@ -81,25 +20,27 @@ let getBookById = (id) => {
         resolve({ book: null });
       }
     } catch (error) {
+      console.log(error);
       reject(error);
     }
   });
 };
 
-const getPage = (page, limit, type, query) => {
+const getPage = (page, limit, type, query, sort_type) => {
   page = parseInt(page);
   limit = parseInt(limit);
   const Sequelize = db.Sequelize; // Giả sử Sequelize đã được khởi tạo trong db
-  let OrCondition = [];
-  setOrCondition(OrCondition, type, query);
+  let { OrCondition, order } = getCondition(type, query, sort_type);
 
   return new Promise(async (resolve, reject) => {
     try {
       let books = await db.books.findAll({
         include: include,
+        attributes: attributes,
         where: {
           [Sequelize.Op.or]: OrCondition,
         },
+        order: order,
       });
       //dm sequelize loi limit co include 1-n n-n
       //tu limit va offset bang code??
@@ -109,26 +50,30 @@ const getPage = (page, limit, type, query) => {
       books = books.slice(offset, offset + limit);
       resolve({ books, total_page });
     } catch (error) {
+      console.log(error);
       reject(error);
     }
   });
 };
 
-function setOrCondition(OrCondition, type, query) {
+function getCondition(type, query, sort_type) {
+  let OrCondition = [];
+  let order = [];
   if (type == "title" || type == "all") {
     OrCondition.push({
       title: {
         [Sequelize.Op.substring]: query,
       },
     });
+    order.push(["title", sort_type]);
   }
-
   if (type == "publisher" || type == "all") {
     OrCondition.push({
       "$publisher.name$": {
         [Sequelize.Op.substring]: query,
       },
     });
+    order.push(["publisher", "name", sort_type]);
   }
   if (type == "id" || type == "all") {
     OrCondition.push({
@@ -136,7 +81,9 @@ function setOrCondition(OrCondition, type, query) {
         [Sequelize.Op.substring]: query,
       },
     });
+    order.push(["book_id", sort_type]);
   }
+  return { OrCondition, order };
 }
 
 let updateBook = (id, updates) => {
@@ -204,9 +151,112 @@ const getAllReferences = async () => {
   };
 };
 
+const createBook = async (newBook) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let book = await db.books.create(newBook);
+      resolve({ book });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 module.exports = {
   getBookById: getBookById,
   getPage: getPage,
   updateBook: updateBook,
   getAllReferences: getAllReferences,
+  createBook: createBook,
+};
+
+const include = [
+  {
+    model: db.bookimages,
+    as: "image",
+    attributes: [
+      [
+        db.sequelize.fn("CONCAT", baseUrl, db.sequelize.col("image.url")),
+        "url",
+      ],
+      "is_main",
+      "bookImage_id",
+    ],
+    where: { is_main: 1 },
+    required: false,
+  },
+  {
+    model: db.bookimages,
+    as: "alt_images",
+    attributes: [
+      [db.sequelize.fn("CONCAT", baseUrl, db.sequelize.col("url")), "url"],
+      "is_main",
+      "bookImage_id",
+    ],
+    where: { is_main: 0 },
+    required: false,
+    separate: true,
+  },
+  {
+    model: db.genres,
+    as: "genre",
+    attributes: ["name"],
+  },
+  {
+    model: db.languages,
+    as: "language",
+    attributes: ["language_name", "language_code"],
+  },
+  {
+    model: db.publishers,
+    as: "publisher",
+    attributes: ["name"],
+  },
+  {
+    model: db.bookdiscount,
+    as: "discount",
+    attributes: ["discount_value", "discount_type"],
+    required: false,
+  },
+  {
+    model: db.authors,
+    as: "authors",
+    attributes: ["name", "author_id"],
+    through: { attributes: [] },
+  },
+  {
+    model: db.bookstatus,
+    as: "status",
+    attributes: ["status_name"],
+  },
+  {
+    model: db.coverformats,
+    as: "coverFormat",
+    attributes: ["name"],
+  },
+  {
+    model: db.batches,
+    as: "stock",
+    attributes: {
+      exclude: ["updatedAt"],
+    },
+    where: {
+      quantity: {
+        [Sequelize.Op.gt]: 0,
+      },
+    },
+    required: false,
+  },
+];
+
+const attributes = {
+  include: [
+    [
+      Sequelize.literal(
+        "(SELECT SUM(quantity) FROM batches WHERE batches.book_id = books.book_id)"
+      ),
+      "stock_quantity",
+    ],
+  ],
+  exclude: ["createdAt", "updatedAt"],
 };

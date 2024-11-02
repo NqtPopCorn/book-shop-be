@@ -9,11 +9,10 @@ Content-Type: application/json
 
 ### get user by token
 GET http://localhost:8080/api/auth/user HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X2lkIjoxMSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTcyODUzNjg1MiwiZXhwIjoxNzI4NjIzMjUyfQ.FVhNA0WTVbLWaX3_uw28sN5WGQS4e2Ps27XRXzlgMlI
-
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X2lkIjoxMSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTcyOTMxNDE5OSwiZXhwIjoxNzI5NDAwNTk5fQ.gKU7UyBbCSyl0OpIYRyWAe3MEcZgo_2aCk27FdUMybc
 ### Login with token
 POST http://localhost:8080/api/auth/login HTTP/1.1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X2lkIjoxMSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTcyODUzNjg1MiwiZXhwIjoxNzI4NjIzMjUyfQ.FVhNA0WTVbLWaX3_uw28sN5WGQS4e2Ps27XRXzlgMlI
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X2lkIjoxMSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTcyOTMxNDE5OSwiZXhwIjoxNzI5NDAwNTk5fQ.gKU7UyBbCSyl0OpIYRyWAe3MEcZgo_2aCk27FdUMybc
 
 ### Register
 POST http://localhost:8080/api/auth/register HTTP/1.1
@@ -27,7 +26,7 @@ Content-Type: application/json
 }
 
 ### get book by id
-GET http://localhost:8080/api/book/1 HTTP/1.1
+GET http://localhost:8080/api/book/6 HTTP/1.1
 
 ### Update book
 POST http://localhost:8080/api/book/1 HTTP/1.1
@@ -38,10 +37,21 @@ Content-Type: application/json
   "discount_id": 2
 }
 
+### Create book
+POST http://localhost:8080/api/book/create HTTP/1.1
+# Authorization: 
+
 ### Get book page
-GET http://localhost:8080/api/book?page=2&limit=1&type=all&q= HTTP/1.1
+GET http://localhost:8080/api/book?page=1&limit=10 HTTP/1.1
 
 ### lay tat ca gia tri trong combo box form them sach
 GET http://localhost:8080/api/book/reference/all HTTP/1.1
 
+### get page purchase
+GET http://localhost:8080/api/purchase?page=2&limit=10 HTTP/1.1
 
+### get purchase by id
+GET http://localhost:8080/api/purchase/1 HTTP/1.1
+
+### get all provider
+GET http://localhost:8080/api/provider/all HTTP/1.1

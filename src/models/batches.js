@@ -1,21 +1,21 @@
 const Sequelize = require("sequelize");
 module.exports = function (sequelize, DataTypes) {
-  const goodsreceiptdetails = sequelize.define(
-    "goodsreceiptdetails",
+  const batches = sequelize.define(
+    "batches",
     {
       book_id: {
+        primaryKey: true,
         type: DataTypes.INTEGER,
         allowNull: false,
-        primaryKey: true,
         references: {
           model: "books",
           key: "book_id",
         },
       },
       receipt_id: {
+        primaryKey: true,
         type: DataTypes.INTEGER,
         allowNull: false,
-        primaryKey: true,
         references: {
           model: "goodsreceipt",
           key: "receipt_id",
@@ -23,26 +23,31 @@ module.exports = function (sequelize, DataTypes) {
       },
       quantity: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
       },
       price: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
       },
-      subtotal: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
     },
     {
       sequelize,
-      tableName: "goodsreceiptdetails",
+      tableName: "batches",
       timestamps: true,
       indexes: [
         {
           name: "PRIMARY",
           unique: true,
-          using: "BTREE",
           fields: [{ name: "book_id" }, { name: "receipt_id" }],
         },
         {
@@ -50,18 +55,23 @@ module.exports = function (sequelize, DataTypes) {
           using: "BTREE",
           fields: [{ name: "receipt_id" }],
         },
+        {
+          name: "book_id",
+          using: "BTREE",
+          fields: [{ name: "book_id" }],
+        },
       ],
     }
   );
 
-  goodsreceiptdetails.associate = function (models) {
-    goodsreceiptdetails.belongsTo(models.books, {
+  batches.associate = function (models) {
+    batches.belongsTo(models.books, {
       foreignKey: "book_id",
     });
-    goodsreceiptdetails.belongsTo(models.goodsreceipt, {
+    batches.belongsTo(models.goodsreceipt, {
       foreignKey: "receipt_id",
     });
   };
 
-  return goodsreceiptdetails;
+  return batches;
 };
