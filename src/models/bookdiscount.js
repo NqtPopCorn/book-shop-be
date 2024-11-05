@@ -1,34 +1,25 @@
 const Sequelize = require("sequelize");
 module.exports = function (sequelize, DataTypes) {
-  const bookdiscount = sequelize.define(
-    "bookdiscount",
+  return sequelize.define(
+    "bookdiscounts",
     {
-      discount_id: {
-        autoIncrement: true,
+      book_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
+        references: {
+          model: "books",
+          key: "book_id",
+        },
       },
-      discount_name: {
-        type: DataTypes.STRING(255),
-        allowNull: true,
-      },
-      discount_type: {
-        type: DataTypes.STRING(255),
-        allowNull: true,
-        comment: "1.TrucTiep, 2.PhanTram",
-      },
-      discount_value: {
+      discount_id: {
         type: DataTypes.INTEGER,
-        allowNull: true,
-      },
-      start_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
-      },
-      end_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
+        allowNull: false,
+        primaryKey: true,
+        references: {
+          model: "discounts",
+          key: "discount_id",
+        },
       },
     },
     {
@@ -40,15 +31,19 @@ module.exports = function (sequelize, DataTypes) {
           name: "PRIMARY",
           unique: true,
           using: "BTREE",
+          fields: [{ name: "book_id" }, { name: "discount_id" }],
+        },
+        {
+          name: "discount_id",
+          using: "BTREE",
           fields: [{ name: "discount_id" }],
+        },
+        {
+          name: "book_id",
+          using: "BTREE",
+          fields: [{ name: "book_id" }],
         },
       ],
     }
   );
-
-  bookdiscount.associate = function (models) {
-    bookdiscount.hasMany(models.books, { foreignKey: "discount_id" });
-  };
-
-  return bookdiscount;
 };

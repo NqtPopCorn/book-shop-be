@@ -3,6 +3,7 @@ const authRouter = require("./auth");
 const bookRouter = require("./book");
 const purchaseRouter = require("./purchase");
 const providerRouter = require("./provider");
+const accountRouter = require("./account");
 const express = require("express");
 const path = require("path");
 
@@ -12,6 +13,7 @@ let initWebRoutes = (app) => {
   app.use("/api/book", bookRouter);
   app.use("/api/purchase", purchaseRouter);
   app.use("/api/provider", providerRouter);
+  app.use("/api/account", accountRouter);
 
   return app.use("/", homeRouter);
 };

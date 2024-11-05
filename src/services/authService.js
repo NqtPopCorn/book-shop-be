@@ -17,16 +17,9 @@ let login = (email, password) => {
             attributes: ["role_name"],
           },
         ],
-        where: { email: email },
+        where: { email: email, status: 1 },
       });
       if (user) {
-        //check status
-        if (!user.status) {
-          resolve({
-            status: 200,
-            message: "Account is locked",
-          });
-        }
         //check password
         let check = await bcrypt.compare(password, user.password);
         if (check) {
@@ -57,7 +50,7 @@ let login = (email, password) => {
       }
       resolve({
         status: 200,
-        message: "Username is not exist",
+        message: "Username is not exist or account is locked",
       });
     } catch (error) {
       reject(error);
@@ -134,7 +127,7 @@ let loginWithToken = (token) => {
         //if token is valid
         //find user by account_id
         let user = await db.accounts.findOne({
-          where: { account_id: decoded.account_id },
+          where: { account_id: decoded.account_id, status: 1 },
           include: [
             {
               model: db.roles,
@@ -143,6 +136,12 @@ let loginWithToken = (token) => {
             },
           ],
         });
+        if (!user) {
+          reject({
+            status: 200,
+            message: "Account is locked",
+          });
+        }
         //create new token
         const newToken = jwt.sign(
           {

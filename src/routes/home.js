@@ -22,16 +22,16 @@ router.get("/", homeController.getHomePage);
 router.get("/upload", homeController.getInputPage);
 router.post("/upload", upload.array("file", 10), homeController.postInputPage);
 
-router.get("/crud", homeController.getCRUD);
+// router.get("/crud", homeController.getCRUD);
 
-router.post("/post-crud", homeController.postCRUD);
+// router.post("/post-crud", homeController.postCRUD);
 
-router.get("/get-crud", homeController.displayGetCRUD);
+// router.get("/get-crud", homeController.displayGetCRUD);
 
-router.get("/edit-crud", homeController.getEditCRUD);
+// router.get("/edit-crud", homeController.getEditCRUD);
 
-router.post("/put-crud", homeController.putCRUD);
+// router.post("/put-crud", homeController.putCRUD);
 
-router.get("/delete-crud", homeController.deleteCRUD);
+// router.get("/delete-crud", homeController.deleteCRUD);
 
 module.exports = router;

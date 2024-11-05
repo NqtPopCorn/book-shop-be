@@ -20,6 +20,7 @@ module.exports = function (sequelize, DataTypes) {
       email: {
         type: DataTypes.STRING(255),
         allowNull: true,
+        unique: true,
       },
       phone_number: {
         type: DataTypes.STRING(255),

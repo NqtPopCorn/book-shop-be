@@ -70,14 +70,6 @@ module.exports = function (sequelize, DataTypes) {
           key: "genre_id",
         },
       },
-      discount_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-          model: "bookdiscount",
-          key: "discount_id",
-        },
-      },
       cover_format_id: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -119,11 +111,6 @@ module.exports = function (sequelize, DataTypes) {
           fields: [{ name: "genre_id" }],
         },
         {
-          name: "discount_id",
-          using: "BTREE",
-          fields: [{ name: "discount_id" }],
-        },
-        {
           name: "cover_format_id",
           using: "BTREE",
           fields: [{ name: "cover_format_id" }],
@@ -150,6 +137,12 @@ module.exports = function (sequelize, DataTypes) {
       otherKey: "receipt_id",
       as: "receipts",
     });
+    books.belongsToMany(models.discounts, {
+      through: "bookdiscounts",
+      foreignKey: "book_id",
+      otherKey: "discount_id",
+      as: "discounts",
+    });
     books.belongsTo(models.bookstatus, {
       as: "status",
       foreignKey: "status_id",
@@ -163,10 +156,6 @@ module.exports = function (sequelize, DataTypes) {
       foreignKey: "publisher_id",
     });
     books.belongsTo(models.genres, { as: "genre", foreignKey: "genre_id" });
-    books.belongsTo(models.bookdiscount, {
-      foreignKey: "discount_id",
-      as: "discount",
-    });
     books.belongsTo(models.coverformats, {
       as: "coverFormat",
       foreignKey: "cover_format_id",

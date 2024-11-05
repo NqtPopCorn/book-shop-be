@@ -26,15 +26,17 @@ let handleGetPage = async (req, res) => {
   try {
     let page = req.query.page || 1;
     let limit = req.query.limit || 10;
-    let type = req.query.type || "all";
+    let searchBy = req.query.type || "all";
     let query = req.query.q || "";
-    let sort_type = req.query.sort_type || "asc";
+    let sortBy = req.query.sortBy || "book_id";
+    let sortType = req.query.sortType || "asc";
     let { books, total_page } = await bookService.getPage(
       page,
       limit,
-      type,
+      searchBy,
       query,
-      sort_type
+      sortBy,
+      sortType
     );
     return res.status(200).json({
       message: "Success",
@@ -53,17 +55,24 @@ let handleGetPage = async (req, res) => {
 let handleUpdate = async (req, res) => {
   try {
     let id = req.params.bookId;
+    let updates = req.body;
+    let newFiles = req.files;
+    let deletedImages = updates.deletedImages
+      ? JSON.parse(updates.deletedImages)
+      : [];
+    let mainImageId = parseInt(updates.main_image_id);
+    let discountIds = updates.discount_id;
+
     if (!id) {
       return res.status(500).json({
         message: "Missing input parameter",
       });
     }
-    let updates = req.body;
-    if (updates.discount_id === "") {
-      updates.discount_id = null;
+
+    if (discountIds) {
+      await bookService.setDiscounts(id, discountIds);
     }
     //them anh
-    let newFiles = req.files;
     newFiles.forEach((file, index) => {
       imageService.createImage({
         url: file.filename,
@@ -72,14 +81,11 @@ let handleUpdate = async (req, res) => {
       });
     });
     //cap nhat anh main
-    let mainImageId = parseInt(updates.main_image_id);
     if (mainImageId) {
       await imageService.changeMainImage(id, mainImageId);
     }
     //xoa anh
-    let deletedImages = updates.deletedImages
-      ? JSON.parse(updates.deletedImages)
-      : [];
+
     if (deletedImages) {
       deletedImages.forEach(async (img) => {
         //cap nhat lai anh main neu bi xoa
@@ -184,7 +190,7 @@ function parseBody(body) {
     language_id: parseInt(body.language_id),
     publisher_id: parseInt(body.publisher_id),
     genre_id: parseInt(body.genre_id),
-    discount_id: body.discount_id ? parseInt(body.discount_id) : null,
+    discountIds: body.discount_id || [],
     cover_format_id: parseInt(body.cover_format_id),
   };
   return newBook;

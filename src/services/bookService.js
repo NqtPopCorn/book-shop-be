@@ -1,6 +1,5 @@
-import e from "cors";
 import db from "../models";
-import Sequelize, { or, where } from "sequelize";
+import Sequelize, { or } from "sequelize";
 require("dotenv").config();
 const baseUrl = `http://${process.env.HOSTNAME}/img/`;
 
@@ -26,11 +25,13 @@ let getBookById = (id) => {
   });
 };
 
-const getPage = (page, limit, type, query, sort_type) => {
+const getPage = (page, limit, searchBy, query, sortBy, sortType) => {
   page = parseInt(page);
   limit = parseInt(limit);
+  let order = [[sortBy, sortType]];
+  if (sortBy === "publisher") order = [["publisher", "name", sortType]];
   const Sequelize = db.Sequelize; // Giả sử Sequelize đã được khởi tạo trong db
-  let { OrCondition, order } = getCondition(type, query, sort_type);
+  let { OrCondition } = getCondition(searchBy, query);
 
   return new Promise(async (resolve, reject) => {
     try {
@@ -56,34 +57,33 @@ const getPage = (page, limit, type, query, sort_type) => {
   });
 };
 
-function getCondition(type, query, sort_type) {
+function getCondition(searchBy, query) {
   let OrCondition = [];
-  let order = [];
-  if (type == "title" || type == "all") {
+  if (searchBy == "title" || searchBy == "all") {
     OrCondition.push({
       title: {
         [Sequelize.Op.substring]: query,
       },
     });
-    order.push(["title", sort_type]);
+    // order.push(["title", sortType]);
   }
-  if (type == "publisher" || type == "all") {
+  if (searchBy == "publisher" || searchBy == "all") {
     OrCondition.push({
       "$publisher.name$": {
         [Sequelize.Op.substring]: query,
       },
     });
-    order.push(["publisher", "name", sort_type]);
+    // order.push(["publisher", "name", sortType]);
   }
-  if (type == "id" || type == "all") {
+  if (searchBy == "id" || searchBy == "all") {
     OrCondition.push({
       book_id: {
         [Sequelize.Op.substring]: query,
       },
     });
-    order.push(["book_id", sort_type]);
+    // order.push(["book_id", sortType]);
   }
-  return { OrCondition, order };
+  return { OrCondition };
 }
 
 let updateBook = (id, updates) => {
@@ -97,6 +97,27 @@ let updateBook = (id, updates) => {
         resolve("Update book success");
       } else {
         resolve("Update book failed");
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+const setDiscounts = (book_id, discountIds) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let book = await db.books.findByPk(book_id);
+      if (book) {
+        let discounts = await db.discounts.findAll({
+          where: {
+            discount_id: discountIds,
+          },
+        });
+        await book.setDiscounts(discounts);
+        resolve("Set discount success");
+      } else {
+        resolve("Book not found");
       }
     } catch (error) {
       reject(error);
@@ -135,9 +156,17 @@ const getAllReferences = async () => {
       exclude: ["createdAt", "updatedAt"],
     },
   });
-  let discounts = await db.bookdiscount.findAll({
+  let discounts = await db.discounts.findAll({
     attributes: {
       exclude: ["createdAt", "updatedAt"],
+    },
+    where: {
+      end_at: {
+        [Sequelize.Op.gte]: new Date(),
+      },
+      start_at: {
+        [Sequelize.Op.lte]: new Date(),
+      },
     },
   });
   return {
@@ -155,6 +184,7 @@ const createBook = async (newBook) => {
   return new Promise(async (resolve, reject) => {
     try {
       let book = await db.books.create(newBook);
+      await book.setDiscounts(newBook.discountIds);
       resolve({ book });
     } catch (error) {
       reject(error);
@@ -168,6 +198,7 @@ module.exports = {
   updateBook: updateBook,
   getAllReferences: getAllReferences,
   createBook: createBook,
+  setDiscounts: setDiscounts,
 };
 
 const include = [
@@ -213,9 +244,20 @@ const include = [
     attributes: ["name"],
   },
   {
-    model: db.bookdiscount,
-    as: "discount",
-    attributes: ["discount_value", "discount_type"],
+    model: db.discounts,
+    as: "discounts",
+    through: { attributes: [] },
+    attributes: {
+      exclude: ["createdAt", "updatedAt"],
+    },
+    where: {
+      end_at: {
+        [Sequelize.Op.gte]: new Date(),
+      },
+      start_at: {
+        [Sequelize.Op.lte]: new Date(),
+      },
+    },
     required: false,
   },
   {
