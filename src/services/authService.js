@@ -17,16 +17,9 @@ let login = (email, password) => {
             attributes: ["role_name"],
           },
         ],
-        where: { email: email },
+        where: { email: email, status: 1 },
       });
       if (user) {
-        //check status
-        if (!user.status) {
-          resolve({
-            status: 200,
-            message: "Account is locked",
-          });
-        }
         //check password
         let check = await bcrypt.compare(password, user.password);
         if (check) {
@@ -57,7 +50,7 @@ let login = (email, password) => {
       }
       resolve({
         status: 200,
-        message: "Username is not exist",
+        message: "Username is not exist or account is locked",
       });
     } catch (error) {
       reject(error);
@@ -74,7 +67,7 @@ let register = (data) => {
       });
       if (user) throw new Error("Email is already exist");
       let hashedPassword = await hashUserPassword(data.password);
-      await db.accounts.create({
+      let newAccount = await db.accounts.create({
         email: data.email,
         password: hashedPassword,
         address: data.address,
@@ -82,6 +75,15 @@ let register = (data) => {
         phone_number: data.phoneNumber,
         role_id: 3, //customer
         status: 1,
+      });
+      //tao customer
+      await db.customers.create({
+        email: data.email,
+        firstName: "",
+        lastName: "",
+        address: data.address,
+        phone_number: data.phoneNumber,
+        account_id: newAccount.account_id,
       });
       resolve("Create new user success");
     } catch (error) {
@@ -125,7 +127,7 @@ let loginWithToken = (token) => {
         //if token is valid
         //find user by account_id
         let user = await db.accounts.findOne({
-          where: { account_id: decoded.account_id },
+          where: { account_id: decoded.account_id, status: 1 },
           include: [
             {
               model: db.roles,
@@ -134,6 +136,12 @@ let loginWithToken = (token) => {
             },
           ],
         });
+        if (!user) {
+          reject({
+            status: 200,
+            message: "Account is locked",
+          });
+        }
         //create new token
         const newToken = jwt.sign(
           {

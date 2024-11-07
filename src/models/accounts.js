@@ -20,6 +20,7 @@ module.exports = function (sequelize, DataTypes) {
       email: {
         type: DataTypes.STRING(255),
         allowNull: true,
+        unique: true,
       },
       phone_number: {
         type: DataTypes.STRING(255),
@@ -27,11 +28,11 @@ module.exports = function (sequelize, DataTypes) {
       },
       role_id: {
         type: DataTypes.INTEGER,
-        allowNull: true,
         references: {
           model: "roles",
           key: "role_id",
         },
+        defaultValue: 3, //customer
       },
       status: {
         type: DataTypes.INTEGER,

@@ -11,8 +11,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //cors config
 const cors = require("cors");
 const corsOptions = {
-    origin: process.env.FE_PORT,
-    optionsSuccessStatus: 200,
+  origin: process.env.FE_PORT,
+  optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
 
@@ -23,5 +23,5 @@ const PORT = process.env.PORT || 6969;
 const HOST = process.env.LOCAL_HOST || "localhost";
 
 app.listen(PORT, HOST, () => {
-    console.log(`App is running at the port ${PORT}`);
+  console.log(`App is running at the port ${PORT}`);
 });
