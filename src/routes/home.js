@@ -1,7 +1,7 @@
 import express from "express";
 import homeController from "../controllers/homeController";
 
-let router = express.Router();
+const router = express.Router();
 
 router.get("/", homeController.getHomePage);
 

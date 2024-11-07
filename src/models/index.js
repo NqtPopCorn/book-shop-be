@@ -8,6 +8,7 @@ const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
+const initModel = require("./init-models");
 
 let sequelize;
 if (config.use_env_variable) {
@@ -39,5 +40,7 @@ Object.keys(db).forEach(modelName => {
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+// customize để sử dụng bảng kết hợp
+db.initModel = initModel(sequelize);
 
 module.exports = db;

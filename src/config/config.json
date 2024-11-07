@@ -1,8 +1,8 @@
 {
   "development": {
     "username": "root",
-    "password": null,
-    "database": "bansach",
+    "password": "trung2205",
+    "database": "book_shop",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "logging": false,

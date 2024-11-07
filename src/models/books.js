@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
-   const books = sequelize.define('books', {
+module.exports = function (sequelize, DataTypes) {
+  const books = sequelize.define('books', {
     book_id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -28,11 +28,11 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     price_receipt: {
-      type: DataTypes.DECIMAL(10,2),
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: true
     },
     profit_rate: {
-      type: DataTypes.DECIMAL(10,2),
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: true
     },
     decription: {
@@ -148,7 +148,7 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
     ]
-   });
+  });
   //association
   books.associate = (models) => {
     books.hasOne(models.bookimages, { as: "image", foreignKey: "book_id" });
