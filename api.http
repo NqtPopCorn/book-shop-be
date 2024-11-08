@@ -42,7 +42,7 @@ POST http://localhost:8080/api/book/create HTTP/1.1
 # Authorization: 
 
 ### Get book page
-GET http://localhost:8080/api/book?page=1&limit=10&sortBy=publisher HTTP/1.1
+GET http://localhost:8080/api/book?page=1&limit=10 HTTP/1.1
 
 ### lay tat ca gia tri trong combo box form them sach
 GET http://localhost:8080/api/book/reference/all HTTP/1.1

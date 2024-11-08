@@ -218,6 +218,7 @@ module.exports = {
   getAllReferences: getAllReferences,
   createBook: createBook,
   setDiscounts: setDiscounts,
+  getGenres: getGenres,
 };
 
 const include = [
