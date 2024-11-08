@@ -34,7 +34,10 @@ Content-Type: application/json
 GET http://localhost:8080/api/book?id=1 HTTP/1.1
 
 ###
-GET http://localhost:8080/api/book?page=2&limit=1 HTTP/1.1
+GET http://localhost:8080/api/book?page=2&limit=2 HTTP/1.1
 
 ###
 GET http://localhost:8080/api/book/test HTTP/1.1
+
+###
+GET http://localhost:8080/api/book/genres HTTP/1.1

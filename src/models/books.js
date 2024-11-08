@@ -153,6 +153,9 @@ module.exports = function(sequelize, DataTypes) {
   books.associate = (models) => {
     books.hasOne(models.bookimages, { as: "image", foreignKey: "book_id" });
     books.hasMany(models.bookimages, { as: "alt_images", foreignKey: "book_id" });
+    books.belongsTo(models.bookdiscount, { as: "discount", foreignKey: "discount_id" });
+    books.belongsTo(models.genres, { as: "genre", foreignKey: "genre_id" });
+    books.belongsTo(models.languages, { as: "language", foreignKey: "language_id" });
   }
   return books;
 };

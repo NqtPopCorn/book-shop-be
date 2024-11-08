@@ -82,6 +82,24 @@ let getPage = (page, limit) => {
             where: { is_main: 1 },
             required: false,
           },
+          {
+            model: db.bookdiscount,
+            as: "discount",
+            attributes: ["discount_value"],
+            required: false,
+          },
+          {
+            model: db.genres,
+            as: "genre",
+            attributes: ["name","parent_id"],
+            required: false,
+          },
+          {
+            model: db.languages,
+            as: "language",
+            attributes: ["language_name"],
+            required: false,
+          }
         ],
         limit: limit,
       });
@@ -93,6 +111,25 @@ let getPage = (page, limit) => {
         resolve({ books, total_page });
       } else {
         resolve({ message: "Book not found" });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let getGenres = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let genres = await db.genres.findAll();
+
+      if (genres) {
+        // Phân loại danh mục chính và phụ
+        let mainCategories = genres.filter(genre => genre.parent_id === null);
+        let subCategories = genres.filter(genre => genre.parent_id !== null);
+
+        resolve({ mainCategories, subCategories });
+      } else {
+        resolve({ message: "Genres not found" });
       }
     } catch (error) {
       reject(error);
@@ -164,4 +201,5 @@ module.exports = {
   getBookById: getBookById,
   getPage: getPage,
   test: test,
+  getGenres: getGenres,
 };

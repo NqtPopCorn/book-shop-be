@@ -38,6 +38,21 @@ let handleGetPage = async (req, res) => {
     });
   }
 };
+let handleGenres = async (req, res) => {
+  try {
+    let genres = await bookService.getGenres(); // Lấy toàn bộ kết quả từ bookService.getGenres()
+
+    return res.status(200).json({
+      message: "Success",
+      data: genres, // Trả về đối tượng genres chứa mainCategories và subCategories
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Get genres failed",
+      error: error.message,
+    });
+  }
+};
 
 let test = async (req, res) => {
   try {
@@ -58,4 +73,5 @@ module.exports = {
   handleGetById: handleGetById,
   handleGetPage: handleGetPage,
   test: test,
+  handleGenres: handleGenres,
 };
