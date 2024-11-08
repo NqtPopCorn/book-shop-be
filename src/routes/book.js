@@ -34,5 +34,5 @@ router.post(
   upload.array("new_images", 10),
   bookController.handleCreate
 );
-
+router.get("/reference/genres", bookController.handleGenres);
 module.exports = router;

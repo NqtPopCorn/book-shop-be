@@ -50,6 +50,22 @@ let handleGetPage = async (req, res) => {
     });
   }
 };
+let handleGenres = async (req, res) => {
+  try {
+    console.log("get genres");
+    let genres = await bookService.getGenres(); // Lấy toàn bộ kết quả từ bookService.getGenres()
+    console.log(genres);
+    return res.status(200).json({
+      message: "Success",
+      data: genres, // Trả về đối tượng genres chứa mainCategories và subCategories
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Get genres failed",
+      error: error.message,
+    });
+  }
+};
 
 // xu ly form multipart
 let handleUpdate = async (req, res) => {
@@ -172,6 +188,7 @@ module.exports = {
   handleUpdate: handleUpdate,
   handleGetAllReferences: handleGetAllReferences,
   handleCreate: handleCreate,
+  handleGenres: handleGenres,
 };
 
 function parseBody(body) {

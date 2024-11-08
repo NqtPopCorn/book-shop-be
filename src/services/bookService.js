@@ -103,6 +103,25 @@ let updateBook = (id, updates) => {
     }
   });
 };
+let getGenres = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let genres = await db.genres.findAll();
+
+      if (genres) {
+        // Phân loại danh mục chính và phụ
+        let mainCategories = genres.filter(genre => genre.parent_id === null);
+        let subCategories = genres.filter(genre => genre.parent_id !== null);
+
+        resolve({ mainCategories, subCategories });
+      } else {
+        resolve({ message: "Genres not found" });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 const setDiscounts = (book_id, discountIds) => {
   return new Promise(async (resolve, reject) => {
@@ -199,6 +218,7 @@ module.exports = {
   getAllReferences: getAllReferences,
   createBook: createBook,
   setDiscounts: setDiscounts,
+  getGenres: getGenres,
 };
 
 const include = [

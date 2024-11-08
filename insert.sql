@@ -44,12 +44,23 @@ INSERT INTO `bookdiscount` (`discount_id`, `discount_name`, `discount_value`, `d
 INSERT INTO `bookimages` (`bookImage_id`, `book_id`, `url`, `is_main`, `createdAt`, `updatedAt`) VALUES
 	(1, 1, 'cube.png', 0, '2024-09-30 08:51:54', '2024-09-30 08:51:54'),
 	(2, 1, '404.png', 1, '2024-09-30 08:51:54', '2024-09-30 08:51:54'),
-	(3, 2, 'cube.png', 1, '2024-09-30 09:47:47', '2024-09-30 09:47:48');
+	(3, 2, 'cube.png', 1, '2024-09-30 09:47:47', '2024-09-30 09:47:48'),
+	(4, 3, '404.png', 1, '2024-09-30 09:47:47', '2024-09-30 09:47:48'),
+	(5, 4, '404.png', 1, '2024-09-30 09:47:47', '2024-09-30 09:47:48'),
+	(6, 5, '404.png', 1, '2024-09-30 09:47:47', '2024-09-30 09:47:48'),
+	(7, 6, '404.png', 1, '2024-09-30 09:47:47', '2024-09-30 09:47:48'),
+	(8, 7, '404.png', 1, '2024-09-30 09:47:47', '2024-09-30 09:47:48');
 
 -- Dumping data for table bansach.books: ~2 rows (approximately)
 INSERT INTO `books` (`book_id`, `title`, `num_page`, `size`, `weight`, `publication_year`, `price_receipt`, `profit_rate`, `decription`, `stock_quantity`, `status_id`, `language_id`, `publisher_id`, `genre_id`, `discount_id`, `cover_format_id`, `createdAt`, `updatedAt`) VALUES
 	(1, 'The Great Adventure', 300, '20x15cm', '500g', 2020, 100000.00, 0.20, 'A great adventure book.', 50, 1, 1, 1, 1, NULL, 1, '2024-09-30 08:51:54', '2024-09-30 08:51:54'),
-	(2, 'The Choosen One', 100, '20x10cm', '300g', 2024, 50000.00, 0.20, 'truong book', 100, 1, 2, 2, 3, 2, 2, '2024-09-30 09:45:25', '2024-09-30 09:45:25');
+	(2, 'The Choosen One', 100, '20x10cm', '300g', 2024, 50000.00, 0.20, 'truong book', 100, 1, 2, 2, 3, 2, 2, '2024-09-30 09:45:25', '2024-09-30 09:45:25'),
+	(3, 'The Choosen One', 100, '20x10cm', '300g', 2024, 50000.00, 0.20, 'truong book', 100, 1, 2, 2, 3, 2, 2, '2024-09-30 09:45:25', '2024-09-30 09:45:25'),
+	(4, 'The Choosen One', 100, '20x10cm', '300g', 2024, 50000.00, 0.20, 'truong book', 100, 1, 2, 2, 3, 2, 2, '2024-09-30 09:45:25', '2024-09-30 09:45:25'),
+	(5, 'The Choosen One', 100, '20x10cm', '300g', 2024, 50000.00, 0.20, 'truong book', 100, 1, 2, 2, 3, 2, 2, '2024-09-30 09:45:25', '2024-09-30 09:45:25'),
+	(6, 'The Choosen One', 100, '20x10cm', '300g', 2024, 50000.00, 0.20, 'truong book', 100, 1, 2, 2, 3, 2, 2, '2024-09-30 09:45:25', '2024-09-30 09:45:25'),
+	(7, 'The Choosen One', 100, '20x10cm', '300g', 2024, 50000.00, 0.20, 'truong book', 100, 1, 2, 2, 3, 2, 2, '2024-09-30 09:45:25', '2024-09-30 09:45:25'),
+	(,8 'The Choosen One', 100, '20x10cm', '300g', 2024, 50000.00, 0.20, 'truong book', 100, 1, 2, 2, 3, 2, 2, '2024-09-30 09:45:25', '2024-09-30 09:45:25');
 
 -- Dumping data for table bansach.bookstatus: ~3 rows (approximately)
 INSERT INTO `bookstatus` (`id`, `status_name`, `createdAt`, `updatedAt`) VALUES
