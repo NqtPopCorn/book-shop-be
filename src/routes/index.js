@@ -5,6 +5,7 @@ const detailProductRouter = require("./detailProduct");
 const purchaseRouter = require("./purchase");
 const providerRouter = require("./provider");
 const accountRouter = require("./account");
+const cartRouter = require("./cart");
 const express = require("express");
 const path = require("path");
 
@@ -16,6 +17,7 @@ let initWebRoutes = (app) => {
   app.use("/api/purchase", purchaseRouter);
   app.use("/api/provider", providerRouter);
   app.use("/api/account", accountRouter);
+  app.use("/api/cart", cartRouter);
 
   return app.use("/", homeRouter);
 };

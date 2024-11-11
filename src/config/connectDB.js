@@ -1,16 +1,8 @@
-<<<<<<< HEAD
 const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize('book_shop', 'root', 'trung2205', {
-    host: 'localhost',
-    dialect: 'mysql'
-=======
-const { Sequelize } = require("sequelize");
-
-const sequelize = new Sequelize("bansach", "root", null, {
-  host: "localhost",
-  dialect: "mysql",
->>>>>>> 83418f868a4d9a13f807471c60a036d877e08c51
+  host: 'localhost',
+  dialect: 'mysql'
 });
 
 let connectDB = async () => {
@@ -29,11 +21,6 @@ let connectDB = async () => {
   }
 };
 
-<<<<<<< HEAD
-
-module.exports = connectDB;
-=======
 connectDB();
 
 module.exports = connectDB;
->>>>>>> 83418f868a4d9a13f807471c60a036d877e08c51

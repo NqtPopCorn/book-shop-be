@@ -43,7 +43,7 @@ module.exports = function (sequelize, DataTypes) {
   );
 
   goodsreceipt.associate = (models) => {
-    goodsreceipt.belongsTo(models.providers, { foreignKey: "provider_id" });
+    goodsreceipt.belongsTo(models.providers, { as: "providers", foreignKey: "provider_id" });
     goodsreceipt.belongsToMany(models.books, {
       as: "details",
       through: models.goodsreceiptdetails,

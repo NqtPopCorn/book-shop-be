@@ -22,7 +22,7 @@ Content-Type: application/json
     "email": "customer1@gmail.com",
     "password": "123",
     "username": "haha",
-    "phoneNumber": "0123456789"
+    "phoneNumber": "0123456789"    
 }
 
 ### get book by id
