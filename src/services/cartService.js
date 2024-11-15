@@ -21,46 +21,36 @@ const getAllBillPromotionService = async () => {
     }
 }
 
-const insertOrderService = async () => {
+const insertOrderService = async (orders) => {
+    const transaction = await db.sequelize.transaction();  // Bắt đầu một transaction
     try {
-        const currentDate = new Date();
-        // Insert an order
-        const newOrder = await Order.create({
-            customer_id: 123,
-            order_date: new Date(),
-            total_amount: 200.00,
-            status_id: 1,
-            address: "123 Main St, Cityville",
-            billPromotion_id: null
+        const { order, orderDetails } = orders;
+
+        // Thực hiện tạo đơn hàng trong transaction
+        const orderCreate = await db.orders.create(order, { transaction });
+
+        // Gán order_id cho từng chi tiết đơn hàng
+        orderDetails.forEach((item) => {
+            item.order_id = orderCreate.order_id;
         });
 
-        // Insert order details for the created order
-        const orderDetails = [
-            {
-                order_id: newOrder.order_id, // Foreign key reference to order
-                book_id: 456,
-                quantity: 2,
-                price: 50.00,
-                discount_id: 1
-            },
-            {
-                order_id: newOrder.order_id,
-                book_id: 789,
-                quantity: 1,
-                price: 100.00,
-                discount_id: null
-            }
-        ];
+        // Thực hiện bulkCreate cho các chi tiết đơn hàng trong transaction
+        await db.orderdetails.bulkCreate(orderDetails, { transaction });
 
-        await OrderDetail.bulkCreate(orderDetails);
-
-        console.log("Sample order and order details inserted successfully!");
+        // Commit transaction để xác nhận thay đổi
+        await transaction.commit();
+        return { error: 0, message: "Sample order and order details inserted successfully!" };
     } catch (error) {
+        // Rollback transaction nếu có lỗi
+        await transaction.rollback();
         console.error(">>> Service insertOrderService ", error.message, error.stack);
-        return { error: 3, message: "Connect data is not successful", promotions: [] };
+        return { error: 3, message: "Connect data is not successful" };
     }
 }
 
+
+
 module.exports = {
-    getAllBillPromotionService
+    getAllBillPromotionService,
+    insertOrderService
 }

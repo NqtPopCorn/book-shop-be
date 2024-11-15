@@ -1,4 +1,4 @@
-const { getDetailProductDataByID, getImagesForThumbnailService, getRelatedProductService } = require("../services/detailProductService");
+const { getDetailProductDataByIdService, getImagesForThumbnailService, getRelatedProductService } = require("../services/detailProductService");
 
 const getDetailProductByID = async (req, res) => {
     try {
@@ -9,7 +9,7 @@ const getDetailProductByID = async (req, res) => {
         }
 
         // Giả sử tìm thấy productID và trả về trong JSON
-        const products = await getDetailProductDataByID(productID);
+        const products = await getDetailProductDataByIdService(productID);
         if (products.error === 3)
             return res.status(503).json(products);
         if (products.error === 4)
