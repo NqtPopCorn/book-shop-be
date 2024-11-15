@@ -1,4 +1,4 @@
-const { getAllBillPromotionService } = require("../services/cartService");
+const { getAllBillPromotionService, insertOrderService } = require("../services/cartService");
 
 const getAllBillPromotionsController = async (req, res) => {
     try {
@@ -18,11 +18,11 @@ const insertOrderController = async (req, res) => {
     try {
         const orders = req.body; // Extract the order data from the request body
 
-        // Process the order here (e.g., save to database, handle logic, etc.)
-        console.log("Received order:", orders);
-
+        const respone = await insertOrderService(orders);
         // Send a response back to the client
-        res.status(201).json({ message: 'Order received successfully', orders });
+        if (respone.error === 3)
+            return res.status(503).json(respone);
+        res.status(201).json(respone);
     } catch (error) {
         return res.status(500).json({ error: 1, message: "Request is refused!" });
     }

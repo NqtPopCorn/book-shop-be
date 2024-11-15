@@ -3,7 +3,7 @@ const db = require("../models");
 import Sequelize, { or } from "sequelize";
 const baseUrl = `http://${process.env.HOSTNAME}/img/`;
 
-const getDetailProductDataByID = async (productID) => {
+const getDetailProductDataByIdService = async (productID) => {
     try {
         const products = await db.books.findOne({
             include: include,
@@ -218,7 +218,7 @@ const getRelatedProductService = async (productId, genreId) => {
 };
 
 module.exports = {
-    getDetailProductDataByID,
+    getDetailProductDataByIdService,
     getImagesForThumbnailService,
     getRelatedProductService
 }
