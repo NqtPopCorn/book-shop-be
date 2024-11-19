@@ -131,12 +131,6 @@ module.exports = function (sequelize, DataTypes) {
       foreignKey: "book_id",
       otherKey: "author_id",
     });
-    books.belongsToMany(models.goodsreceipt, {
-      through: models.goodsreceiptdetails,
-      foreignKey: "book_id",
-      otherKey: "receipt_id",
-      as: "receipts",
-    });
     books.belongsToMany(models.discounts, {
       through: "bookdiscounts",
       foreignKey: "book_id",

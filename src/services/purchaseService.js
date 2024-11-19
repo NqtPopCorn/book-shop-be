@@ -111,10 +111,16 @@ const getReceiptById = async (id) => {
         where: { receipt_id: id },
         include: [
           {
-            model: db.books,
-            as: "details",
-            attributes: ["book_id", "title"],
-            through: { attributes: ["quantity", "price"], as: "detail" },
+            model: db.batches,
+            as: "batches",
+            include: [
+              {
+                model: db.books,
+                as: "book",
+                attributes: ["title"],
+              },
+            ],
+            attributes: ["import_quantity", "price"],
           },
           {
             model: db.providers,
@@ -134,6 +140,7 @@ const getReceiptById = async (id) => {
 };
 
 const getReceiptDetail = async (id) => {
+  //k xai
   return new Promise(async (resolve, reject) => {
     try {
       let receiptDetail = await db.goodsreceiptdetails.findAll({
@@ -152,25 +159,14 @@ const getReceiptDetail = async (id) => {
 const createReceipt = async ({ total, provider_id, details }) => {
   return new Promise(async (resolve, reject) => {
     try {
-      db.sequelize.transaction(async (t) => {
-        let newReceipt = await db.goodsreceipt.create(
-          { total, provider_id, quantityDetails: details, batches: details },
-          {
-            transaction: t,
-            include: [
-              {
-                model: db.goodsreceiptdetails,
-                as: "quantityDetails",
-              },
-              {
-                model: db.batches,
-                as: "batches",
-              },
-            ],
-          }
-        );
-        resolve(newReceipt);
+      let newReceipt = await db.goodsreceipt.create({ total, provider_id });
+      let batches = await db.batches.createBulk(details);
+      batches.forEach(async (batch) => {
+        await newReceipt.addBatch(batch, {
+          through: { quantity: batch.stock_quantity, price: batch.price },
+        });
       });
+      resolve(newReceipt);
     } catch (error) {
       console.log("service error: ", error.message);
       reject(error);

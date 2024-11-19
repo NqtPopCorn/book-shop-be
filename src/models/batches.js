@@ -3,8 +3,13 @@ module.exports = function (sequelize, DataTypes) {
   const batches = sequelize.define(
     "batches",
     {
-      book_id: {
+      batch_id: {
+        autoIncrement: true,
+        type: DataTypes.INTEGER,
+        allowNull: false,
         primaryKey: true,
+      },
+      book_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -12,16 +17,7 @@ module.exports = function (sequelize, DataTypes) {
           key: "book_id",
         },
       },
-      receipt_id: {
-        primaryKey: true,
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "goodsreceipt",
-          key: "receipt_id",
-        },
-      },
-      quantity: {
+      stock_quantity: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
@@ -48,12 +44,8 @@ module.exports = function (sequelize, DataTypes) {
         {
           name: "PRIMARY",
           unique: true,
-          fields: [{ name: "book_id" }, { name: "receipt_id" }],
-        },
-        {
-          name: "receipt_id",
           using: "BTREE",
-          fields: [{ name: "receipt_id" }],
+          fields: [{ name: "batch_id" }],
         },
         {
           name: "book_id",
@@ -67,9 +59,6 @@ module.exports = function (sequelize, DataTypes) {
   batches.associate = function (models) {
     batches.belongsTo(models.books, {
       foreignKey: "book_id",
-    });
-    batches.belongsTo(models.goodsreceipt, {
-      foreignKey: "receipt_id",
     });
   };
 

@@ -44,19 +44,11 @@ module.exports = function (sequelize, DataTypes) {
 
   goodsreceipt.associate = (models) => {
     goodsreceipt.belongsTo(models.providers, { foreignKey: "provider_id" });
-    goodsreceipt.belongsToMany(models.books, {
-      as: "details",
+    goodsreceipt.belongsToMany(models.batches, {
+      as: "batches",
       through: models.goodsreceiptdetails,
       foreignKey: "receipt_id",
-      otherKey: "book_id",
-    });
-    goodsreceipt.hasMany(models.batches, {
-      as: "batches",
-      foreignKey: "receipt_id",
-    });
-    goodsreceipt.hasMany(models.goodsreceiptdetails, {
-      as: "quantityDetails",
-      foreignKey: "receipt_id",
+      otherKey: "batch_id",
     });
   };
 

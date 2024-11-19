@@ -78,12 +78,14 @@ const handleCreate = async (req, res) => {
     let total = data.selectedBooks.reduce((acc, item) => {
       return acc + item.quantity * item.price;
     }, 0);
+    // mac dinh se tao batch moi khi tao receipt, sau nay se nang cap thanh nhap ca ma lo hang
     let details = data.selectedBooks.map((item) => {
       return {
-        ...item,
-        subtotal: item.quantity * item.price,
+        book_id: item.book_id,
+        stock_quantity: item.quantity,
+        price: item.price,
       };
-    });
+    }); //item = {book_id, quantity, price}
 
     let provider_id = parseInt(data.provider_id);
     let receipt = await purchaseService.createReceipt({

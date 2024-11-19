@@ -58,3 +58,6 @@ GET http://localhost:8080/api/provider/all HTTP/1.1
 
 ###get page account
 GET http://localhost:8080/api/account?page=1&limit=10 HTTP/1.1
+
+### 
+GET http://localhost:8080/api/thongke/receipts HTTP/1.1
