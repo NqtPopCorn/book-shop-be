@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 module.exports = function (sequelize, DataTypes) {
-  return sequelize.define(
+  const order = sequelize.define(
     "orders",
     {
       order_id: {
@@ -16,10 +16,6 @@ module.exports = function (sequelize, DataTypes) {
           model: "customers",
           key: "customer_id",
         },
-      },
-      order_date: {
-        type: DataTypes.DATE,
-        allowNull: true,
       },
       total_amount: {
         type: DataTypes.INTEGER,
@@ -75,4 +71,24 @@ module.exports = function (sequelize, DataTypes) {
       ],
     }
   );
+
+  order.associate = function (models) {
+    order.belongsTo(models.customers, {
+      foreignKey: "customer_id",
+    });
+    order.belongsTo(models.orderstatus, {
+      foreignKey: "status_id",
+    });
+    order.belongsTo(models.billpromotions, {
+      foreignKey: "billPromotion_id",
+    });
+    order.belongsToMany(models.batches, {
+      through: models.orderdetails,
+      foreignKey: "order_id",
+      otherKey: "batch_id",
+      as: "batches",
+    });
+  };
+
+  return order;
 };

@@ -19,12 +19,12 @@ module.exports = function (sequelize, DataTypes) {
       },
       email: {
         type: DataTypes.STRING(255),
-        allowNull: true,
+        allowNull: false,
         unique: true,
       },
       phone_number: {
         type: DataTypes.STRING(255),
-        allowNull: true,
+        allowNull: false,
       },
       role_id: {
         type: DataTypes.INTEGER,
@@ -62,18 +62,9 @@ module.exports = function (sequelize, DataTypes) {
           using: "BTREE",
           fields: [{ name: "account_id" }],
         },
-        {
-          name: "role_id",
-          using: "BTREE",
-          fields: [{ name: "role_id" }],
-        },
       ],
     }
   );
-
-  accounts.associate = (models) => {
-    accounts.belongsTo(models.roles, { foreignKey: "role_id" });
-  };
 
   return accounts;
 };

@@ -117,10 +117,11 @@ const getReceiptById = async (id) => {
               {
                 model: db.books,
                 as: "book",
-                attributes: ["title"],
+                attributes: ["book_id", "title"],
               },
             ],
-            attributes: ["import_quantity", "price"],
+            attributes: ["price"],
+            through: { attributes: ["quantity"], as: "detail" },
           },
           {
             model: db.providers,
@@ -160,7 +161,7 @@ const createReceipt = async ({ total, provider_id, details }) => {
   return new Promise(async (resolve, reject) => {
     try {
       let newReceipt = await db.goodsreceipt.create({ total, provider_id });
-      let batches = await db.batches.createBulk(details);
+      let batches = await db.batches.bulkCreate(details);
       batches.forEach(async (batch) => {
         await newReceipt.addBatch(batch, {
           through: { quantity: batch.stock_quantity, price: batch.price },

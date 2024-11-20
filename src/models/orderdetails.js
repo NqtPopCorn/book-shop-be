@@ -1,31 +1,29 @@
 const Sequelize = require("sequelize");
 module.exports = function (sequelize, DataTypes) {
-  return sequelize.define(
+  const orderdetails = sequelize.define(
     "orderdetails",
     {
       order_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        primaryKey: true,
         references: {
           model: "orders",
           key: "order_id",
         },
       },
-      book_id: {
+      batch_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        primaryKey: true,
         references: {
-          model: "books",
-          key: "book_id",
+          model: "batches",
+          key: "batch_id",
         },
       },
       quantity: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      price: {
+      final_price: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
@@ -44,17 +42,6 @@ module.exports = function (sequelize, DataTypes) {
       timestamps: true,
       indexes: [
         {
-          name: "PRIMARY",
-          unique: true,
-          using: "BTREE",
-          fields: [{ name: "order_id" }, { name: "book_id" }],
-        },
-        {
-          name: "book_id",
-          using: "BTREE",
-          fields: [{ name: "book_id" }],
-        },
-        {
           name: "discount_id",
           using: "BTREE",
           fields: [{ name: "discount_id" }],
@@ -62,4 +49,6 @@ module.exports = function (sequelize, DataTypes) {
       ],
     }
   );
+
+  return orderdetails;
 };

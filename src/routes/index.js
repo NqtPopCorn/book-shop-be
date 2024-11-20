@@ -5,6 +5,7 @@ const purchaseRouter = require("./purchase");
 const providerRouter = require("./provider");
 const accountRouter = require("./account");
 const thongKeRouter = require("./thongke");
+const orderRouter = require("./order");
 const express = require("express");
 const path = require("path");
 
@@ -16,6 +17,7 @@ let initWebRoutes = (app) => {
   app.use("/api/provider", providerRouter);
   app.use("/api/account", accountRouter);
   app.use("/api/thongke", thongKeRouter);
+  app.use("/api/order", orderRouter);
 
   return app.use("/", homeRouter);
 };
