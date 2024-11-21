@@ -7,7 +7,6 @@ const getDetailProductByID = async (req, res) => {
         if (!productID) {
             return res.status(200).json({ error: 2, message: "Missing product id parameter", products: [] });
         }
-
         // Giả sử tìm thấy productID và trả về trong JSON
         const products = await getDetailProductDataByIdService(productID);
         if (products.error === 3)

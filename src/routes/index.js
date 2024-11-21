@@ -7,6 +7,9 @@ const providerRouter = require("./provider");
 const accountRouter = require("./account");
 const orderConfirmationRouter = require("./orderConfirmation");
 const cartRouter = require("./cart");
+const thongKeRouter = require("./thongke");
+const orderRouter = require("./order");
+const customerRouter = require("./customer");
 const express = require("express");
 const path = require("path");
 
@@ -20,6 +23,10 @@ let initWebRoutes = (app) => {
   app.use("/api/account", accountRouter);
   app.use("/api/cart", cartRouter);
   app.use("/api/order-confirmation", orderConfirmationRouter)
+  app.use("/api/thongke", thongKeRouter);
+  app.use("/api/order", orderRouter);
+  app.use("/api/customer", customerRouter);
+
 
   return app.use("/", homeRouter);
 };

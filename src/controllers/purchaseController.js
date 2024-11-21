@@ -69,21 +69,23 @@ const handleGetById = async (req, res) => {
 const handleCreate = async (req, res) => {
   try {
     let data = req.body;
-    if (!data.selectedBooks || !data.provider_id) {
+    if (!data.purchaseDetails || !data.provider_id) {
       return res.status(500).json({
         message: "Missing input parameter",
       });
     }
     //sau nay chac de client tinh toan
-    let total = data.selectedBooks.reduce((acc, item) => {
+    let total = data.purchaseDetails.reduce((acc, item) => {
       return acc + item.quantity * item.price;
     }, 0);
-    let details = data.selectedBooks.map((item) => {
+    // mac dinh se tao batch moi khi tao receipt, sau nay se nang cap thanh nhap ca ma lo hang
+    let details = data.purchaseDetails.map((item) => {
       return {
-        ...item,
-        subtotal: item.quantity * item.price,
+        book_id: item.book_id,
+        stock_quantity: item.quantity,
+        price: item.price,
       };
-    });
+    }); //item = {book_id, quantity, price}
 
     let provider_id = parseInt(data.provider_id);
     let receipt = await purchaseService.createReceipt({

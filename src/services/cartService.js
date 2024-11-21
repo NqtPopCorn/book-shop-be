@@ -1,5 +1,6 @@
 const db = require("../models");
 const { Op, where } = require('sequelize');
+const { getMinBatch, getBook } = require("./orderService");
 
 const getAllBillPromotionService = async () => {
     try {
@@ -34,8 +35,45 @@ const insertOrderService = async (orders) => {
             item.order_id = orderCreate.order_id;
         });
 
+        // Thực hiện trừ số lượng trong batches
+        for (let i = 0; i < orderDetails.length; i++) {
+            let item = orderDetails[i];
+            // let book = await getBook(item.book_id, item.discount_id);
+            // if (!book) {
+            //     throw new Error("Book not found or discount not available");
+            // }
+            // let discount = book.discounts[0];
+            // let final_cost = parseInt(
+            //     item.quantity * book.sale_price * (1 - discount.percent_value / 100)
+            // );
+            // total += final_cost;
+            while (item.quantity > 0) {
+                let minBatch = await getMinBatch(item.book_id);
+                if (!minBatch) {
+                    throw new Error("Not found batches for this product");
+                }
+                let quantity = Math.min(item.quantity, minBatch.stock_quantity);
+                if (quantity === 0) {
+                    throw new Error("Not enough stock");
+                }
+                let detail = await db.orderdetails.create(
+                    {
+                        order_id: item.order_id,
+                        batch_id: minBatch.batch_id,
+                        quantity: quantity,
+                        final_price: item.price,
+                    },
+                    { transaction: transaction }
+                );
+                // details.push(detail);
+                //update batch
+                minBatch.stock_quantity -= quantity;
+                await minBatch.save({ transaction: transaction });
+                item.quantity -= quantity;
+            }
+        }
         // Thực hiện bulkCreate cho các chi tiết đơn hàng trong transaction
-        await db.orderdetails.bulkCreate(orderDetails, { transaction });
+        // await db.orderdetails.bulkCreate(orderDetails, { transaction });
 
         // Commit transaction để xác nhận thay đổi
         await transaction.commit();

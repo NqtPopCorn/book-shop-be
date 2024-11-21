@@ -303,7 +303,7 @@ const include = [
       exclude: ["updatedAt"],
     },
     where: {
-      quantity: {
+      stock_quantity: {
         [Sequelize.Op.gt]: 0,
       },
     },
@@ -315,7 +315,7 @@ const attributes = {
   include: [
     [
       Sequelize.literal(
-        "(SELECT SUM(quantity) FROM batches WHERE batches.book_id = books.book_id)"
+        "(SELECT SUM(stock_quantity) FROM batches WHERE batches.book_id = books.book_id)"
       ),
       "stock_quantity",
     ],

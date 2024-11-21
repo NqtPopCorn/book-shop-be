@@ -88,16 +88,6 @@ const include = [
         through: { attributes: [] },
     },
     {
-        model: db.goodsreceipt,
-        as: "receipts",
-        attributes: ["provider_id"],
-        include: [{
-            model: db.providers,
-            as: "providers",
-            attributes: ["name"],
-        }]
-    },
-    {
         model: db.bookstatus,
         as: "status",
         attributes: ["status_name"],
@@ -114,7 +104,7 @@ const include = [
             exclude: ["updatedAt"],
         },
         where: {
-            quantity: {
+            stock_quantity: {
                 [Sequelize.Op.gt]: 0,
             },
         },
@@ -126,13 +116,14 @@ const attributes = {
     include: [
         [
             Sequelize.literal(
-                "(SELECT SUM(quantity) FROM batches WHERE batches.book_id = books.book_id)"
+                "(SELECT SUM(stock_quantity) FROM batches WHERE batches.book_id = books.book_id)"
             ),
-            "stock_quantity",
+            "stock_quantity", // Đặt alias cho kết quả của subquery
         ],
     ],
     exclude: ["createdAt", "updatedAt"],
 };
+
 
 
 const getImagesForThumbnailService = async (productID) => {
