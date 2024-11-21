@@ -5,6 +5,7 @@ const detailProductRouter = require("./detailProduct");
 const purchaseRouter = require("./purchase");
 const providerRouter = require("./provider");
 const accountRouter = require("./account");
+const orderConfirmationRouter = require("./orderConfirmation");
 const cartRouter = require("./cart");
 const express = require("express");
 const path = require("path");
@@ -18,6 +19,7 @@ let initWebRoutes = (app) => {
   app.use("/api/provider", providerRouter);
   app.use("/api/account", accountRouter);
   app.use("/api/cart", cartRouter);
+  app.use("/api/order-confirmation", orderConfirmationRouter)
 
   return app.use("/", homeRouter);
 };

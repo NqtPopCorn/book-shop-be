@@ -1,5 +1,5 @@
 const db = require("../models");
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 
 const getAllBillPromotionService = async () => {
     try {
@@ -48,6 +48,52 @@ const insertOrderService = async (orders) => {
     }
 }
 
+const updateQuantityOfOderDetailsInBatchesTableService = async (orderDetails, transaction) => {
+    try {
+        const bookIds = orderDetails.map(item => item.book_id);
+        // Truy vấn các lô nhập (batches) theo book_id và sắp xếp theo thứ tự nhập
+        const batches = await db.batches.findAll({
+            where: {
+                book_id: { [Op.in]: bookIds },
+            },
+            order: [['receipt_id', 'ASC']], // Sắp xếp theo thứ tự nhập sớm nhất
+            transaction, // Đảm bảo dùng trong giao dịch
+        });
+
+        // Tạo một map để nhóm số lượng cần bán theo book_id
+        const soldQuantities = orderDetails.reduce((acc, item) => {
+            acc[item.book_id] = (acc[item.book_id] || 0) + item.quantity;
+            return acc;
+        }, {});
+
+        // Lặp qua từng book_id để cập nhật số lượng trong batches
+        for (const book_id of Object.keys(soldQuantities)) {
+            let remainingToSell = soldQuantities[book_id];
+
+            // Lặp qua các batches tương ứng với book_id
+            for (const batch of batches.filter(b => b.book_id === parseInt(book_id))) {
+                if (remainingToSell <= 0) break;
+
+                // Tính số lượng có thể trừ ở lô hiện tại
+                const quantityToDeduct = Math.min(batch.quantity, remainingToSell);
+
+                // Cập nhật số lượng của lô hiện tại
+                batch.quantity -= quantityToDeduct;
+                remainingToSell -= quantityToDeduct;
+
+                // Lưu thay đổi
+                await batch.save({ transaction });
+            }
+
+            // Nếu vẫn còn số lượng cần bán mà không có lô nhập, báo lỗi
+            if (remainingToSell > 0) {
+                throw new Error(`Not enough stock for book_id ${book_id}`);
+            }
+        }
+    } catch (error) {
+
+    }
+}
 
 
 module.exports = {
