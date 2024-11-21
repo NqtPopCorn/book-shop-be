@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-let router = express.Router();
+const router = express.Router();
 
 router.get("/", homeController.getHomePage);
 
