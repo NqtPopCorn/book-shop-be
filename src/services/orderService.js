@@ -95,6 +95,7 @@ const getBook = (book_id, discount_id) => {
           start_at: {
             [db.Sequelize.Op.lte]: new Date(),
           },
+          status: 1,
         },
       },
     ],

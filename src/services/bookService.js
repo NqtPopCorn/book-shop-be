@@ -110,8 +110,8 @@ let getGenres = () => {
 
       if (genres) {
         // Phân loại danh mục chính và phụ
-        let mainCategories = genres.filter(genre => genre.parent_id === null);
-        let subCategories = genres.filter(genre => genre.parent_id !== null);
+        let mainCategories = genres.filter((genre) => genre.parent_id === null);
+        let subCategories = genres.filter((genre) => genre.parent_id !== null);
 
         resolve({ mainCategories, subCategories });
       } else {
@@ -277,6 +277,7 @@ const include = [
       start_at: {
         [Sequelize.Op.lte]: new Date(),
       },
+      status: 1,
     },
     required: false,
   },

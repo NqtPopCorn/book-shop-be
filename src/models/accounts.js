@@ -66,5 +66,11 @@ module.exports = function (sequelize, DataTypes) {
     }
   );
 
+  accounts.associate = function (models) {
+    accounts.belongsTo(models.roles, {
+      foreignKey: "role_id",
+    });
+  };
+
   return accounts;
 };

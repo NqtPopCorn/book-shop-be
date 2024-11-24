@@ -7,6 +7,8 @@ const providerRouter = require("./provider");
 const accountRouter = require("./account");
 const thongKeRouter = require("./thongke");
 const orderRouter = require("./order");
+const discountRouter = require("./discount");
+const billPromotionRouter = require("./billPromotion");
 const express = require("express");
 const path = require("path");
 
@@ -20,6 +22,8 @@ let initWebRoutes = (app) => {
   app.use("/api/account", accountRouter);
   app.use("/api/thongke", thongKeRouter);
   app.use("/api/order", orderRouter);
+  // app.use("/api/discount", discountRouter);
+  app.use("/api/bill-promotion", billPromotionRouter);
 
   return app.use("/", homeRouter);
 };
