@@ -146,3 +146,6 @@ Content-Type: application/json
     "name": "abc"
   }
 }
+
+### get order detail
+GET http://localhost:8080/api/order/detail/3 HTTP/1.1
