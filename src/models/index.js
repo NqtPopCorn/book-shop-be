@@ -45,16 +45,16 @@ Object.keys(db).forEach((modelName) => {
   }
 });
 
-// dung khi muon sua database sau khi sua model
-(async () => {
-  try {
-    await sequelize.authenticate();
-    await sequelize.sync({ alter: true });
-    console.log("DB connection has been established and models are synced.");
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-  }
-})();
+// // dung khi muon sua database sau khi sua model
+// (async () => {
+//   try {
+//     await sequelize.authenticate();
+//     await sequelize.sync({ alter: true });
+//     console.log("DB connection has been established and models are synced.");
+//   } catch (error) {
+//     console.error("Unable to connect to the database:", error);
+//   }
+// })();
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //cors config
 const cors = require("cors");
 const corsOptions = {
-  origin: process.env.FE_PORT,
+  origin: process.env.CLIENT,
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));

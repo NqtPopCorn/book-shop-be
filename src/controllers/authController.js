@@ -13,6 +13,7 @@ let handleLogin = async (req, res) => {
         token: response.token,
       });
     }
+
     //get email and password from client request
     let email = req.body.email;
     let password = req.body.password;

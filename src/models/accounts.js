@@ -68,6 +68,7 @@ module.exports = function (sequelize, DataTypes) {
 
   accounts.associate = function (models) {
     accounts.belongsTo(models.roles, {
+      as: "role",
       foreignKey: "role_id",
     });
   };

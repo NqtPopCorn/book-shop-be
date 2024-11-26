@@ -32,5 +32,17 @@ module.exports = function (sequelize, DataTypes) {
     }
   );
 
+  goodsreceiptdetails.associate = (models) => {
+    goodsreceiptdetails.belongsTo(models.goodsreceipt, {
+      as: "goodsreceipt",  // Alias for goodsreceipt
+      foreignKey: "receipt_id",  // Foreign key for the relationship
+    });
+
+    goodsreceiptdetails.belongsTo(models.batches, {
+      as: "batch",  // Alias for batch
+      foreignKey: "batch_id",  // Foreign key for the relationship
+    });
+  };
+
   return goodsreceiptdetails;
 };

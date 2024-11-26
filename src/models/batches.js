@@ -60,6 +60,13 @@ module.exports = function (sequelize, DataTypes) {
     batches.belongsTo(models.books, {
       foreignKey: "book_id",
     });
+    batches.belongsToMany(models.goodsreceipt, {
+      as: "goodsreceipts",
+      through: models.goodsreceiptdetails,
+      foreignKey: "batch_id",
+      otherKey: "receipt_id",
+    });
+
   };
 
   return batches;

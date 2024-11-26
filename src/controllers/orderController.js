@@ -1,4 +1,5 @@
 import orderService from "../services/orderService";
+const { getOrderByEmailService } = require("../services/orderService");
 
 const handleGetPage = async (req, res) => {
   res.send("Get page");
@@ -47,7 +48,28 @@ const handleCreate = async (req, res) => {
   }
 };
 
+const getOrderbyEmailController = async (req, res) => {
+  try {
+    const { email } = req.query;
+    const respone = await getOrderByEmailService(email);
+    if (respone.error === 4)
+      return res.status(404).json(respone);
+    if (respone.error === 3)
+      return res.status(503).json(respone);
+    return res.status(200).json(respone);
+  } catch (error) {
+    console.error(
+      ">>> Service getOrderbyEmailController", "\nError:",
+      error.message,
+      "\nStack:",
+      error.stack
+    );
+    return { error: 3, message: "Data connection failed" };
+  }
+}
+
 module.exports = {
-  handleGetPage: handleGetPage,
-  handleCreate: handleCreate,
+  handleGetPage,
+  handleCreate,
+  getOrderbyEmailController
 };
