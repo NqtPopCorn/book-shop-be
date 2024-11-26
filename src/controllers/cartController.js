@@ -22,6 +22,8 @@ const insertOrderController = async (req, res) => {
         // Send a response back to the client
         if (respone.error === 3)
             return res.status(503).json(respone);
+        if (respone.error === 4)
+            return res.status(401).json(respone);
         res.status(201).json(respone);
     } catch (error) {
         return res.status(500).json({ error: 1, message: "Request is refused!" });

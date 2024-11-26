@@ -104,8 +104,49 @@ const getBook = (book_id, discount_id) => {
   });
 };
 
+const getOrderByEmailService = async (email) => {
+  const transaction = await db.sequelize.transaction(); // Khởi tạo transaction
+  try {
+    // Tìm khách hàng trong cơ sở dữ liệu
+    const customer = await db.customers.findOne({
+      where: { email: email },
+      transaction: transaction, // Gắn transaction vào query
+      include: [
+        {
+          model: db.orders,
+          as: "orders",
+        }
+      ]
+    });
+
+    // Kiểm tra nếu khách hàng không tồn tại
+    if (!customer) {
+      await transaction.rollback(); // Hủy transaction
+      return { error: 4, message: "Customer is not found" };
+    }
+    // Commit transaction sau khi thành công
+    await transaction.commit();
+    return {
+      error: 0,
+      message: "Customer information updated successfully",
+      customer: customer,
+    };
+  } catch (error) {
+    // Rollback nếu có lỗi
+    await transaction.rollback();
+    console.error(
+      ">>> Service updateCustomerInfoService Error:",
+      error.message,
+      "\nStack:",
+      error.stack
+    );
+    return { error: 3, message: "Data connection failed" };
+  }
+}
+
 module.exports = {
   createOrder: createOrder,
   getMinBatch,
-  getBook
+  getBook,
+  getOrderByEmailService
 };

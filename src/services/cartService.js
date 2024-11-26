@@ -1,6 +1,7 @@
 const db = require("../models");
 const { Op, where } = require('sequelize');
 const { getMinBatch, getBook } = require("./orderService");
+const e = require("express");
 
 const getAllBillPromotionService = async () => {
     try {
@@ -25,59 +26,54 @@ const getAllBillPromotionService = async () => {
 const insertOrderService = async (orders) => {
     const transaction = await db.sequelize.transaction();  // Bắt đầu một transaction
     try {
-        const { order, orderDetails } = orders;
+        const { email, order, orderDetails } = orders;
+        const customer = await db.customers.findOne({
+            where: { email: email }
+        })
+        if (customer) {
+            order.customer_id = customer.customer_id;
+            // Thực hiện tạo đơn hàng trong transaction
+            const orderCreate = await db.orders.create(order, { transaction });
 
-        // Thực hiện tạo đơn hàng trong transaction
-        const orderCreate = await db.orders.create(order, { transaction });
+            // Gán order_id cho từng chi tiết đơn hàng
+            orderDetails.forEach((item) => {
+                item.order_id = orderCreate.order_id;
+            });
 
-        // Gán order_id cho từng chi tiết đơn hàng
-        orderDetails.forEach((item) => {
-            item.order_id = orderCreate.order_id;
-        });
-
-        // Thực hiện trừ số lượng trong batches
-        for (let i = 0; i < orderDetails.length; i++) {
-            let item = orderDetails[i];
-            // let book = await getBook(item.book_id, item.discount_id);
-            // if (!book) {
-            //     throw new Error("Book not found or discount not available");
-            // }
-            // let discount = book.discounts[0];
-            // let final_cost = parseInt(
-            //     item.quantity * book.sale_price * (1 - discount.percent_value / 100)
-            // );
-            // total += final_cost;
-            while (item.quantity > 0) {
-                let minBatch = await getMinBatch(item.book_id);
-                if (!minBatch) {
-                    throw new Error("Not found batches for this product");
+            // Thực hiện trừ số lượng trong batches
+            for (let i = 0; i < orderDetails.length; i++) {
+                let item = orderDetails[i];
+                while (item.quantity > 0) {
+                    let minBatch = await getMinBatch(item.book_id);
+                    if (!minBatch) {
+                        throw new Error("Not found batches for this product");
+                    }
+                    let quantity = Math.min(item.quantity, minBatch.stock_quantity);
+                    if (quantity === 0) {
+                        throw new Error("Not enough stock");
+                    }
+                    let detail = await db.orderdetails.create(
+                        {
+                            order_id: item.order_id,
+                            batch_id: minBatch.batch_id,
+                            quantity: quantity,
+                            final_price: item.price,
+                        },
+                        { transaction: transaction }
+                    );
+                    // details.push(detail);
+                    //update batch
+                    minBatch.stock_quantity -= quantity;
+                    await minBatch.save({ transaction: transaction });
+                    item.quantity -= quantity;
                 }
-                let quantity = Math.min(item.quantity, minBatch.stock_quantity);
-                if (quantity === 0) {
-                    throw new Error("Not enough stock");
-                }
-                let detail = await db.orderdetails.create(
-                    {
-                        order_id: item.order_id,
-                        batch_id: minBatch.batch_id,
-                        quantity: quantity,
-                        final_price: item.price,
-                    },
-                    { transaction: transaction }
-                );
-                // details.push(detail);
-                //update batch
-                minBatch.stock_quantity -= quantity;
-                await minBatch.save({ transaction: transaction });
-                item.quantity -= quantity;
             }
+            // Commit transaction để xác nhận thay đổi
+            await transaction.commit();
+            return { error: 0, message: "Sample order and order details inserted successfully!" };
+        } else {
+            return { error: 4, message: "Customer not found to insert order!" };
         }
-        // Thực hiện bulkCreate cho các chi tiết đơn hàng trong transaction
-        // await db.orderdetails.bulkCreate(orderDetails, { transaction });
-
-        // Commit transaction để xác nhận thay đổi
-        await transaction.commit();
-        return { error: 0, message: "Sample order and order details inserted successfully!" };
     } catch (error) {
         // Rollback transaction nếu có lỗi
         await transaction.rollback();
