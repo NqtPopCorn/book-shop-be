@@ -6,6 +6,27 @@ require("dotenv").config();
 const salt = bcrypt.genSaltSync(10);
 const secretKey = process.env.API_SECRET_KEY;
 
+const writeLog = async (account_id, action) => {
+  if (action === "login") {
+    //ghi log neu dang nhap lan dau tien trong ngay
+    let log = await db.Log.findOne({
+      where: {
+        account_id: account_id,
+        action: "login",
+        createdAt: {
+          [db.Sequelize.Op.gte]: new Date(new Date().setHours(0, 0, 0, 0)),
+        },
+      },
+    });
+    if (!log) {
+      await db.Log.create({
+        account_id: account_id,
+        action: "login",
+      });
+    }
+  }
+};
+
 let login = (email, password) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -32,8 +53,7 @@ let login = (email, password) => {
             secretKey,
             { expiresIn: "1d" }
           );
-          user.last_login = new Date();
-          await user.save();
+          writeLog(user.account_id, "login");
           const { username, account_id, email, role, phone_number } = user;
           resolve({
             status: 200,
@@ -151,9 +171,7 @@ let loginWithToken = (token) => {
           secretKey,
           { expiresIn: "1d" }
         );
-        //update last logins
-        user.last_login = new Date();
-        await user.save();
+        writeLog(user.account_id, "login");
         const { username, account_id, email, role, phone_number } = user;
         resolve({
           status: 200,
