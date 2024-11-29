@@ -58,7 +58,10 @@ const handleGetPage = async (req, res) => {
     // Thực hiện truy vấn với phân trang và sắp xếp
     const { rows: accounts, count: totalItems } = await Account.findAndCountAll(
       {
-        include: Role,
+        include: {
+          model: Role,
+          as: "role",
+        },
         attributes: { exclude: ["password"] },
         where: {
           [Op.and]: andConditions,

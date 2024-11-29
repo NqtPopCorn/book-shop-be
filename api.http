@@ -3,8 +3,8 @@ POST http://localhost:8080/api/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "truong@gmail.com",
-  "password": "123456"
+  "email": "admin@gmail.com",
+  "password": "123"
 }
 
 ### get user by token
@@ -19,9 +19,9 @@ POST http://localhost:8080/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-    "email": "truong@gmail.com",
+    "email": "trung@gmail.com",
     "password": "123",
-    "username": "truong",
+    "username": "trung",
     "phoneNumber": "0123456789"
 }
 
@@ -80,8 +80,17 @@ GET http://localhost:8080/api/provider/all HTTP/1.1
 ###get page account
 GET http://localhost:8080/api/account?page=1&limit=10 HTTP/1.1
 
-### thong ke nhao hang
+### thong ke nhap hang
 GET http://localhost:8080/api/thongke/receipts HTTP/1.1
+
+### thong ke truy cap
+GET http://localhost:8080/api/thongke/accession?fromDate=2024-01-01&toDate=2025-01-01 HTTP/1.1
+
+### thong ke doanh thu, loi nhuan
+GET http://localhost:8080/api/thongke/revenue?fromDate=2024-01-01&toDate=2025-01-01 HTTP/1.1
+
+### thong ke sach ban chay
+GET http://localhost:8080/api/thongke/sale-trending?fromDate=2024-11-26&toDate=2025-01-01 HTTP/1.1
 
 ### dat hang
 POST http://localhost:8080/api/order HTTP/1.1
@@ -110,3 +119,42 @@ Content-Type: application/json
 {
   "status": 1
 }
+
+### get page discount
+GET http://localhost:8080/api/discounts HTTP/1.1
+
+### get page promotion
+GET http://localhost:8080/api/bill-promotion HTTP/1.1
+
+### create promotion
+POST http://localhost:8080/api/bill-promotion HTTP/1.1
+Content-Type: application/json
+
+{
+  "promotion": {
+    "conditional": 200000,
+    "type": "Truc tiep",
+    "value": 30000,
+    "start_at": "2021-08-17",
+    "end_at": "2021-08-17",
+    "name": "abc"
+  }
+}
+
+### update promotion
+POST http://localhost:8080/api/bill-promotion/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "promotion": {
+    "conditional": 200000,
+    "type": "Truc tiep",
+    "value": 30000,
+    "start_at": "2021-08-17",
+    "end_at": "2021-08-17",
+    "name": "abc"
+  }
+}
+
+### get order detail
+GET http://localhost:8080/api/order/detail/3 HTTP/1.1

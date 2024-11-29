@@ -20,7 +20,6 @@ module.exports = function (sequelize, DataTypes) {
       email: {
         type: DataTypes.STRING(255),
         allowNull: false,
-        unique: true,
       },
       phone_number: {
         type: DataTypes.STRING(255),
@@ -36,10 +35,6 @@ module.exports = function (sequelize, DataTypes) {
       },
       status: {
         type: DataTypes.INTEGER,
-        allowNull: true,
-      },
-      last_login: {
-        type: DataTypes.DATE,
         allowNull: true,
       },
       otp: {
@@ -61,6 +56,11 @@ module.exports = function (sequelize, DataTypes) {
           unique: true,
           using: "BTREE",
           fields: [{ name: "account_id" }],
+        },
+        {
+          name: "UNIQUE_EMAIL", // Tên index để quản lý
+          unique: true,
+          fields: ["email"], // Đảm bảo uniqueness cho email
         },
       ],
     }
