@@ -78,6 +78,7 @@ module.exports = function (sequelize, DataTypes) {
       as: "customer",
     });
     order.belongsTo(models.orderstatus, {
+      as: "orderstatus",
       foreignKey: "status_id",
     });
     order.belongsTo(models.billpromotions, {

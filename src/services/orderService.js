@@ -112,10 +112,33 @@ const getOrderByEmailService = async (email) => {
     const customer = await db.customers.findOne({
       where: { email: email },
       transaction: transaction, // Gắn transaction vào query
+      attributes: ["customer_id"],
       include: [
         {
           model: db.orders,
           as: "orders",
+          include: [
+            {
+              model: db.orderstatus,
+              as: "orderstatus",
+              attributes: ["status_name"],
+            },
+            {
+              model: db.batches,
+              as: "batches",
+              attributes: ["book_id"],
+              include: [
+                {
+                  model: db.books,
+                  as: "books",
+                  attributes: ["title"],
+                }
+              ],
+              through: {
+                attributes: ["quantity", "final_price"], // Chỉ lấy final_price từ bảng trung gian
+              },
+            },
+          ],
         }
       ]
     });
