@@ -1,4 +1,4 @@
-const { getDetailProductDataByIdService, getImagesForThumbnailService, getRelatedProductService } = require("../services/detailProductService");
+const { getDetailProductDataByIdService, getImagesForThumbnailService, getRelatedProductService, getGenreOfBookService } = require("../services/detailProductService");
 
 const getDetailProductByID = async (req, res) => {
     try {
@@ -56,8 +56,22 @@ const getRelatedProductController = async (req, res) => {
     }
 }
 
+const getGenreOfBookController = async (req, res) => {
+    try {
+        const genres = await getGenreOfBookService();
+        if (genres.error === 3)
+            return res.status(503).json(genreOfBook);
+        if (genres.error === 4)
+            return res.status(404).json(genres);
+        return res.status(200).json(genres);
+    } catch (error) {
+        return res.status(500).json({ error: 1, message: "Request is refused!", genres: [] });
+    }
+}
+
 module.exports = {
     getDetailProductByID,
     getImagesForThumbnailController,
-    getRelatedProductController
+    getRelatedProductController,
+    getGenreOfBookController
 }

@@ -14,6 +14,7 @@ const billPromotionRouter = require("./billPromotion");
 const customerRouter = require("./customer");
 const express = require("express");
 const path = require("path");
+const forgotPasswordRouter = require("./forgotPassword");
 
 let initWebRoutes = (app) => {
   app.use("/", express.static(path.resolve(__dirname, "../../public")));
@@ -28,6 +29,7 @@ let initWebRoutes = (app) => {
   app.use("/api/thongke", thongKeRouter);
   app.use("/api/order", orderRouter);
   app.use("/api/customer", customerRouter);
+  app.use("/api/forgot-password", forgotPasswordRouter);
   // app.use("/api/discount", discountRouter);
   app.use("/api/bill-promotion", billPromotionRouter);
 

@@ -1,4 +1,4 @@
-const { getOrdersService, updateStatusOrderService, updateStatusCancelOrderService } = require("../services/orderConfirmationService");
+const { getOrdersService, updateStatusOrderService, updateStatusCancelOrderService, updateStatusReceivedOrderService } = require("../services/orderConfirmationService");
 
 const getOrdersController = async (req, res) => {
     try {
@@ -33,6 +33,13 @@ const updateStatusOrderController = async (req, res) => {
             case "cancel": {
                 // Giả sử tìm thấy productID và trả về trong JSON
                 const cancel = await updateStatusCancelOrderService(orderId);
+                if (cancel.error === 4)
+                    return res.status(404).json(cancel);
+                return res.status(200).json(cancel);
+            }
+            case "received": {
+                // Giả sử tìm thấy productID và trả về trong JSON
+                const cancel = await updateStatusReceivedOrderService(orderId);
                 if (cancel.error === 4)
                     return res.status(404).json(cancel);
                 return res.status(200).json(cancel);
