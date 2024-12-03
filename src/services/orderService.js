@@ -66,6 +66,7 @@ const createOrder = (customer_id, orderDetails, address) => {
 };
 
 const getMinBatch = (book_id) => {
+  book_id = parseInt(book_id);
   return db.batches.findOne({
     where: {
       book_id: book_id,

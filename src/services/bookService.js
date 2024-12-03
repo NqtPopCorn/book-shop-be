@@ -144,6 +144,27 @@ const setDiscounts = (book_id, discountIds) => {
   });
 };
 
+const setAuthors = (book_id, authorIds) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let book = await db.books.findByPk(book_id);
+      if (book) {
+        let authors = await db.authors.findAll({
+          where: {
+            author_id: authorIds,
+          },
+        });
+        await book.setAuthors(authors);
+        resolve("Set authors success");
+      } else {
+        resolve("Book not found");
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const getAllReferences = async () => {
   let genres = await db.genres.findAll({
     attributes: {
@@ -219,6 +240,7 @@ module.exports = {
   createBook: createBook,
   setDiscounts: setDiscounts,
   getGenres: getGenres,
+  setAuthors: setAuthors,
 };
 
 const include = [
