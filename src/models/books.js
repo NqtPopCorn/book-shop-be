@@ -130,6 +130,7 @@ module.exports = function (sequelize, DataTypes) {
       through: "bookauthors",
       foreignKey: "book_id",
       otherKey: "author_id",
+      as: "authors",
     });
     books.belongsToMany(models.discounts, {
       through: "bookdiscount",

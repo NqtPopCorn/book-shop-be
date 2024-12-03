@@ -76,6 +76,7 @@ let handleUpdate = async (req, res) => {
       : [];
     let mainImageId = parseInt(updates.main_image_id);
     let discountIds = updates.discount_id;
+    let authorIds = updates.author_id;
 
     if (!id) {
       return res.status(500).json({
@@ -85,6 +86,9 @@ let handleUpdate = async (req, res) => {
 
     if (discountIds) {
       await bookService.setDiscounts(id, discountIds);
+    }
+    if (authorIds) {
+      await bookService.setAuthors(id, authorIds);
     }
     //them anh
     newFiles.forEach((file, index) => {
