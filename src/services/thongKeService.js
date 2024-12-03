@@ -85,7 +85,7 @@ const getRevenueAndProfit = (fromDate, toDate) => {
               WHERE b.batch_id = d.batch_id
               GROUP BY order_id) AS TEMP
           WHERE o.order_id = temp.order_id) TEMP
-        WHERE temp.createdAt >= '${fromDate}' AND temp.createdAt < '${toDate}'
+        WHERE DATE(temp.createdAt) >= '${fromDate}' AND DATE(temp.createdAt) < '${toDate}'
         GROUP BY DATE(temp.createdAt)`,
         {
           type: db.sequelize.QueryTypes.SELECT,
@@ -139,7 +139,7 @@ const getSaleTrending = (fromDate, toDate) => {
         JOIN orderdetails d ON o.order_id = d.order_id
         JOIN batches b ON d.batch_id = b.batch_id
         JOIN books p ON b.book_id = p.book_id
-        WHERE o.createdAt >= '${fromDate}' AND o.createdAt < '${toDate}'
+        WHERE DATE(o.createdAt) >= '${fromDate}' AND DATE(o.createdAt) <= '${toDate}'
         GROUP BY b.book_id
         ORDER BY quantity DESC`,
         {

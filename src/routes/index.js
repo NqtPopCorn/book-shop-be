@@ -9,8 +9,7 @@ const orderConfirmationRouter = require("./orderConfirmation");
 const cartRouter = require("./cart");
 const thongKeRouter = require("./thongke");
 const orderRouter = require("./order");
-const discountRouter = require("./discount");
-const billPromotionRouter = require("./billPromotion");
+const promotionRouter = require("./promotion");
 const customerRouter = require("./customer");
 const express = require("express");
 const path = require("path");
@@ -32,6 +31,7 @@ let initWebRoutes = (app) => {
   app.use("/api/forgot-password", forgotPasswordRouter);
   // app.use("/api/discount", discountRouter);
   app.use("/api/bill-promotion", billPromotionRouter);
+  app.use("/api/promotion", promotionRouter);
 
   return app.use("/", homeRouter);
 };
