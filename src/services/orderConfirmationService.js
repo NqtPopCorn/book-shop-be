@@ -3,7 +3,30 @@ const db = require("../models");
 
 const getOrdersService = async () => {
     try {
-        const orders = await db.orders.findAll();
+        const orders = await db.orders.findAll({
+            include: [
+                {
+                    model: db.orderstatus,
+                    as: "orderstatus",
+                    attributes: ["status_name"],
+                },
+                {
+                    model: db.batches,
+                    as: "batches",
+                    attributes: ["book_id"],
+                    include: [
+                        {
+                            model: db.books,
+                            as: "books",
+                            attributes: ["title"],
+                        }
+                    ],
+                    through: {
+                        attributes: ["quantity", "final_price"], // Chỉ lấy final_price từ bảng trung gian
+                    },
+                },
+            ],
+        });
         if (!orders) {
             return { error: 4, message: "Orders is not found", orders: [] };
         }
@@ -79,8 +102,25 @@ const updateStatusCancelOrderService = async (orderId) => {
     }
 }
 
+const updateStatusReceivedOrderService = async (orderId) => {
+    try {
+        const result = await db.orders.update(
+            { status_id: 4 }, // Giá trị cần cập nhật
+            { where: { order_id: orderId } } // Điều kiện lọc
+        );
+        if (!result[0]) {
+            return { error: 4, message: "Order by id is not found" };
+        }
+        return { error: 0, message: "Update status order succeed" };
+    } catch (error) {
+        console.error(">>> Service updateStatusReceivedOrderService ", error.message, error.stack);
+        return { error: 3, message: "Connect data is not successful" };
+    }
+}
+
 module.exports = {
     getOrdersService,
     updateStatusOrderService,
-    updateStatusCancelOrderService
+    updateStatusCancelOrderService,
+    updateStatusReceivedOrderService
 }

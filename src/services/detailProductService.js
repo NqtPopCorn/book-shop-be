@@ -208,8 +208,26 @@ const getRelatedProductService = async (productId, genreId) => {
     }
 };
 
+const getGenreOfBookService = async () => {
+    try {
+        const genres = await db.genres.findAll({
+            attributes: {
+                exclude: ["createAt", "updateAt"]
+            }
+        });
+        if (!genres || genres.length === 0) {
+            return { error: 4, message: "Genre not found", genres: [] };
+        }
+        return { error: 0, message: "Get data for Genre succeeded", genres };
+    } catch (error) {
+        console.error(">>> Service getGenreOfBookService Error:", error.message, "\nStack:", error.stack);
+        return { error: 3, message: "Data connection failed" };
+    }
+};
+
 module.exports = {
     getDetailProductDataByIdService,
     getImagesForThumbnailService,
-    getRelatedProductService
+    getRelatedProductService,
+    getGenreOfBookService
 }
