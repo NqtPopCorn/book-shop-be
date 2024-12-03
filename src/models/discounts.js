@@ -48,7 +48,7 @@ module.exports = function (sequelize, DataTypes) {
 
   discounts.associate = function (models) {
     discounts.belongsToMany(models.books, {
-      through: models.bookdiscounts,
+      through: "bookdiscount",
       foreignKey: "discount_id",
       otherKey: "book_id",
     });

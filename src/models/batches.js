@@ -58,7 +58,7 @@ module.exports = function (sequelize, DataTypes) {
 
   batches.associate = function (models) {
     batches.belongsTo(models.books, {
-      as: "books",
+      as: "book",
       foreignKey: "book_id",
     });
     batches.belongsToMany(models.goodsreceipt, {
@@ -67,7 +67,6 @@ module.exports = function (sequelize, DataTypes) {
       foreignKey: "batch_id",
       otherKey: "receipt_id",
     });
-
   };
 
   return batches;

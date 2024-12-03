@@ -130,17 +130,17 @@ const getOrderByEmailService = async (email) => {
               include: [
                 {
                   model: db.books,
-                  as: "books",
+                  as: "book",
                   attributes: ["title"],
-                }
+                },
               ],
               through: {
                 attributes: ["quantity", "final_price"], // Chỉ lấy final_price từ bảng trung gian
               },
             },
           ],
-        }
-      ]
+        },
+      ],
     });
 
     // Kiểm tra nếu khách hàng không tồn tại
@@ -166,11 +166,11 @@ const getOrderByEmailService = async (email) => {
     );
     return { error: 3, message: "Data connection failed" };
   }
-}
+};
 
 module.exports = {
   createOrder: createOrder,
   getMinBatch,
   getBook,
-  getOrderByEmailService
+  getOrderByEmailService,
 };

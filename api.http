@@ -51,7 +51,7 @@ GET http://localhost:8080/api/book/reference/all HTTP/1.1
 GET http://localhost:8080/api/purchase?page=1&limit=10 HTTP/1.1
 
 ### get purchase by id
-GET http://localhost:8080/api/purchase/1 HTTP/1.1
+GET http://localhost:8080/api/purchase/7 HTTP/1.1
 
 ### create purchase
 POST http://localhost:8080/api/purchase HTTP/1.1
@@ -158,3 +158,12 @@ Content-Type: application/json
 
 ### get order detail
 GET http://localhost:8080/api/order/detail/3 HTTP/1.1
+
+### get all bill promotion
+GET http://localhost:8080/api/promotion/bill-promotion HTTP/1.1
+
+### get all discount
+GET http://localhost:8080/api/promotion/discount HTTP/1.1
+
+### get all genres
+GET http://localhost:8080/api/promotion/genre HTTP/1.1
