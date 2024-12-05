@@ -53,11 +53,14 @@ const insertOrderService = async (orders) => {
         item.order_id = orderCreate.order_id;
       });
 
+      console.log(orderDetails);
+
       // Thực hiện trừ số lượng trong batches
       for (let i = 0; i < orderDetails.length; i++) {
         let item = orderDetails[i];
         while (item.quantity > 0) {
-          let minBatch = await getMinBatch(parseInt(item.book_id));
+          let minBatch = await getMinBatch(parseInt(item.book_id), transaction);
+          console.log("batch: ", minBatch.dataValues);
           if (!minBatch) {
             throw new Error("Not found batches for this product");
           }
@@ -71,10 +74,10 @@ const insertOrderService = async (orders) => {
               batch_id: minBatch.batch_id,
               quantity: quantity,
               final_price: item.price,
+              discount_id: item.discount_id,
             },
             { transaction: transaction }
           );
-          // details.push(detail);
           //update batch
           minBatch.stock_quantity -= quantity;
           await minBatch.save({ transaction: transaction });
@@ -93,6 +96,7 @@ const insertOrderService = async (orders) => {
   } catch (error) {
     // Rollback transaction nếu có lỗi
     await transaction.rollback();
+    console.log("call rollback");
     console.error(
       ">>> Service insertOrderService ",
       error.message,

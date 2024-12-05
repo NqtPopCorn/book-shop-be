@@ -65,7 +65,7 @@ const createOrder = (customer_id, orderDetails, address) => {
   });
 };
 
-const getMinBatch = (book_id) => {
+const getMinBatch = (book_id, transaction) => {
   book_id = parseInt(book_id);
   return db.batches.findOne({
     where: {
@@ -75,6 +75,7 @@ const getMinBatch = (book_id) => {
       },
     },
     order: [["stock_quantity", "ASC"]],
+    transaction: transaction,
   });
 };
 

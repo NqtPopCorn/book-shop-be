@@ -35,29 +35,22 @@ const getReceipts = (fromDate, toDate) => {
 const getAccessLogs = (fromDate, toDate) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const logs = await db.Log.findAll({
+      const log = await db.Log.findAll({
+        attributes: [
+          [db.sequelize.fn("DATE", db.sequelize.col("createdAt")), "date"],
+          [db.sequelize.fn("COUNT", db.sequelize.col("account_id")), "count"],
+        ],
         where: {
           createdAt: {
             [db.Sequelize.Op.gte]: fromDate,
             [db.Sequelize.Op.lte]: toDate,
           },
         },
+        group: [db.sequelize.fn("DATE", db.sequelize.col("createdAt"))],
       });
-      //dem theo tung ngay
-      let result = new Map();
-      logs.forEach((log) => {
-        let date = log.createdAt.toISOString().split("T")[0];
-        if (result.has(date)) {
-          let count = result.get(date);
-          result.set(date, count + 1);
-        } else {
-          result.set(date, 1);
-        }
-      });
-      result = Array.from(result).map(([date, count]) => ({ date, count }));
-
-      resolve(result);
+      resolve(log);
     } catch (error) {
+      console.log(error);
       reject(error);
     }
   });
