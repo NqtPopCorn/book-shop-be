@@ -61,7 +61,7 @@ const updateStatusOrderService = async (orderId) => {
 const updateStatusCancelOrderService = async (orderId) => {
   try {
     const result = await db.orders.update(
-      { status_id: 5 }, // Giá trị cần cập nhật
+      { status_id: 4 }, // Giá trị cần cập nhật
       { where: { order_id: orderId } } // Điều kiện lọc
     );
     if (!result[0]) {
@@ -116,7 +116,7 @@ const updateStatusCancelOrderService = async (orderId) => {
 const updateStatusReceivedOrderService = async (orderId) => {
   try {
     const result = await db.orders.update(
-      { status_id: 4 }, // Giá trị cần cập nhật
+      { status_id: 3 }, // Giá trị cần cập nhật
       { where: { order_id: orderId } } // Điều kiện lọc
     );
     if (!result[0]) {
