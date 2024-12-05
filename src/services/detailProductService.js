@@ -100,15 +100,22 @@ const include = [
     {
         model: db.batches,
         as: "stock",
-        attributes: {
-            exclude: ["updatedAt"],
-        },
+        attributes: ["batch_id"],
         where: {
             stock_quantity: {
                 [Sequelize.Op.gt]: 0,
             },
         },
         required: false,
+        include: {
+            model: db.goodsreceipt,
+            as: "goodsreceipts",
+            attributes: ["receipt_id"],
+            include: {
+                model: db.providers,
+                attributes: ["name"]
+            }
+        }
     },
 ];
 
