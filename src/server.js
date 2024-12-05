@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //cors config
 const cors = require("cors");
 const corsOptions = {
-  origin: process.env.CLIENT,
+  origin: [process.env.CLIENT, process.env.CLIENT_2 = "http://localhost:3001"],
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
