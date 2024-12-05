@@ -7,3 +7,4 @@ cmd.notes
 /src/config/config.json
 
 .prettierrc
+ForgotPasswordTokenCustomer.db
