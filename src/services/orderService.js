@@ -28,7 +28,6 @@ const createOrder = (customer_id, orderDetails, address) => {
         );
         total += final_cost;
         while (item.quantity > 0) {
-          console.log("item", item);
           let minBatch = await getMinBatch(item.book_id);
           let quantity = Math.min(item.quantity, minBatch.stock_quantity);
           if (quantity === 0) {
@@ -126,6 +125,10 @@ const getOrderByEmailService = async (email) => {
               attributes: ["status_name"],
             },
             {
+              model: db.billpromotions,
+              attributes: ["name", "type", "value"],
+            },
+            {
               model: db.batches,
               as: "batches",
               attributes: ["book_id"],
@@ -133,11 +136,11 @@ const getOrderByEmailService = async (email) => {
                 {
                   model: db.books,
                   as: "book",
-                  attributes: ["title"],
+                  attributes: ["title", "sale_price"],
                 },
               ],
               through: {
-                attributes: ["quantity", "final_price"], // Chỉ lấy final_price từ bảng trung gian
+                attributes: ["quantity", "final_price", "discount_id"], // Chỉ lấy final_price từ bảng trung gian 
               },
             },
           ],
@@ -161,7 +164,7 @@ const getOrderByEmailService = async (email) => {
     // Rollback nếu có lỗi
     await transaction.rollback();
     console.error(
-      ">>> Service updateCustomerInfoService Error:",
+      ">>> Service getOrderByEmailService Error:",
       error.message,
       "\nStack:",
       error.stack
