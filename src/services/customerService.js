@@ -122,8 +122,38 @@ const updateCustomerInfoService = async (data) => {
     }
 };
 
+const getDiscountBookService = async () => {
+    try {
+        const resDiscount = await db.discounts.findAll({
+            attributes: [
+                "discount_id", "name", "percent_value"
+            ]
+        });
+        // Kiểm tra nếu resDiscount không tồn tại
+        if (!resDiscount) {
+            return { error: 4, message: "resDiscount is not found" };
+        }
+
+        return {
+            error: 0,
+            message: "Get discount book is succeed",
+            resDiscount: resDiscount,
+        };
+    } catch (error) {
+        console.error(
+            ">>> Service getDiscountBookService",
+            "\nError:",
+            error.message,
+            "\nStack:",
+            error.stack
+        );
+        return { error: 3, message: "Data connection failed" };
+    }
+}
+
 module.exports = {
     postRegisterCustomerService,
     getCustomerInfoService,
     updateCustomerInfoService,
+    getDiscountBookService,
 }

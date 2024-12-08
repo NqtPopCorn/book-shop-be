@@ -53,8 +53,6 @@ const insertOrderService = async (orders) => {
         item.order_id = orderCreate.order_id;
       });
 
-      console.log(orderDetails);
-
       // Thực hiện trừ số lượng trong batches
       for (let i = 0; i < orderDetails.length; i++) {
         let item = orderDetails[i];
@@ -66,7 +64,6 @@ const insertOrderService = async (orders) => {
         }
         while (item.quantity > 0) {
           let minBatch = await getMinBatch(parseInt(item.book_id), transaction);
-          console.log("batch: ", minBatch.dataValues);
           if (!minBatch) {
             throw new Error("Not found batches for this product");
           }
@@ -166,10 +163,50 @@ const updateQuantityOfOderDetailsInBatchesTableService = async (
         throw new Error(`Not enough stock for book_id ${book_id}`);
       }
     }
-  } catch (error) {}
+  } catch (error) { }
 };
+
+const getBooksService = async () => {
+  try {
+    const resBooks = await db.books.findAll({
+      attributes: [
+        "book_id", "title", "sale_price", "status_id"
+      ],
+      include: [
+        {
+          model: db.bookstatus,
+          as: "status",
+          attributes: ["status_name"]
+        }, {
+          model: db.discounts,
+          as: "discounts",
+        }
+      ]
+    });
+    // Kiểm tra nếu resDiscount không tồn tại
+    if (!resBooks) {
+      return { error: 4, message: "resBooks is not found" };
+    }
+
+    return {
+      error: 0,
+      message: "Get resBooks is succeed",
+      resBooks: resBooks,
+    };
+  } catch (error) {
+    console.error(
+      ">>> Service getBooksService",
+      "\nError:",
+      error.message,
+      "\nStack:",
+      error.stack
+    );
+    return { error: 3, message: "Data connection failed" };
+  }
+}
 
 module.exports = {
   getAllBillPromotionService,
   insertOrderService,
+  getBooksService
 };

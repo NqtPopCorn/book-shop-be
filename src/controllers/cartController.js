@@ -1,6 +1,7 @@
 const {
   getAllBillPromotionService,
   insertOrderService,
+  getBooksService
 } = require("../services/cartService");
 
 const getAllBillPromotionsController = async (req, res) => {
@@ -33,7 +34,28 @@ const insertOrderController = async (req, res) => {
   }
 };
 
+const getBooksController = async (req, res) => {
+  try {
+    const respone = await getBooksService();
+    if (respone.error === 4)
+      return res.status(404).json(respone);
+    if (respone.error === 3)
+      return res.status(503).json(respone);
+    return res.status(200).json(respone);
+  } catch (error) {
+    console.error(
+      ">>> Service getBooksController", "\nError:",
+      error.message,
+      "\nStack:",
+      error.stack
+    );
+    return { error: 3, message: "Data connection failed" };
+  }
+}
+
+
 module.exports = {
   getAllBillPromotionsController,
   insertOrderController,
+  getBooksController
 };

@@ -1,4 +1,4 @@
-const { postRegisterCustomerService, getCustomerInfoService, updateCustomerInfoService } = require("../services/customerService");
+const { postRegisterCustomerService, getCustomerInfoService, updateCustomerInfoService, getDiscountBookService } = require("../services/customerService");
 
 const registerCustomerController = async (req, res) => {
     try {
@@ -57,8 +57,22 @@ const updateCustomerInfoController = async (req, res) => {
     }
 }
 
+const getDiscountBookController = async (req, res) => {
+    try {
+        const resCustomer = await getDiscountBookService();
+        if (resCustomer.error === 4)
+            return res.status(404).json(resCustomer);
+        if (resCustomer.error === 3)
+            return res.status(503).json(resCustomer);
+        return res.status(200).json(resCustomer);
+    } catch (error) {
+        return res.status(500).json({ error: 1, message: "Request is refused!" });
+    }
+}
+
 module.exports = {
     registerCustomerController,
     getCustomerInfoController,
     updateCustomerInfoController,
+    getDiscountBookController,
 }
