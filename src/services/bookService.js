@@ -225,6 +225,7 @@ const createBook = async (newBook) => {
     try {
       let book = await db.books.create(newBook);
       await book.setDiscounts(newBook.discountIds);
+      // await book.setAuthors(newBook.authorIds);
       resolve({ book });
     } catch (error) {
       reject(error);

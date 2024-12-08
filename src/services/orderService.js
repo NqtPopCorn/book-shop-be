@@ -1,3 +1,4 @@
+import { where } from "sequelize";
 import db from "../models";
 import bookService from "./bookService";
 
@@ -144,6 +145,35 @@ const getOrderByEmailService = async (email) => {
         },
       ],
     });
+
+    //loc cac batch co book_id trung nhau
+    // let orders = customer.orders;
+    // orders.forEach((order) => {
+    //   let newBatches = [];
+    //   order.batches.forEach((batch) => {
+    //     let index = newBatches.findIndex(
+    //       (item) => item.book_id === batch.book_id
+    //     );
+    //     if (index === -1) {
+    //       newBatches.push({
+    //         book_id: batch.book_id,
+    //         book_name: batch.book.title,
+    //         quantity: batch.orderdetails.quantity,
+    //         final_price: batch.orderdetails.final_price,
+    //       });
+    //     } else {
+    //       newBatches[index].quantity += batch.orderdetails.quantity;
+    //     }
+    //   });
+    //   order.batches = newBatches;
+    // });
+
+    // customer.dataValues.orders.forEach((order) => {
+    //   let newBatches = [];
+    //   order.dataValues.batches.forEach((batch) => {
+
+    //   });
+    // });
 
     // Kiểm tra nếu khách hàng không tồn tại
     if (!customer) {

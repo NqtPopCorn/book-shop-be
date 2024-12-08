@@ -163,6 +163,7 @@ let handleCreate = async (req, res) => {
   try {
     let newBook = parseBody(req.body);
     let newImages = req.files;
+    console.log(newBook);
     let { book } = await bookService.createBook(newBook);
     //them anh
     newImages.forEach((image, index) => {

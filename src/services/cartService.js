@@ -47,7 +47,7 @@ const insertOrderService = async (orders) => {
       order.customer_id = customer.customer_id;
       // Thực hiện tạo đơn hàng trong transaction
       const orderCreate = await db.orders.create(order, { transaction });
-
+      // let total_amount = 0;
       // Gán order_id cho từng chi tiết đơn hàng
       orderDetails.forEach((item) => {
         item.order_id = orderCreate.order_id;
@@ -58,6 +58,12 @@ const insertOrderService = async (orders) => {
       // Thực hiện trừ số lượng trong batches
       for (let i = 0; i < orderDetails.length; i++) {
         let item = orderDetails[i];
+        let discount = await db.discounts.findOne({
+          where: { discount_id: item.discount_id },
+        });
+        if (!discount) {
+          throw new Error("Discount not found");
+        }
         while (item.quantity > 0) {
           let minBatch = await getMinBatch(parseInt(item.book_id), transaction);
           console.log("batch: ", minBatch.dataValues);
@@ -73,11 +79,18 @@ const insertOrderService = async (orders) => {
               order_id: item.order_id,
               batch_id: minBatch.batch_id,
               quantity: quantity,
-              final_price: item.price,
+              final_price: parseInt(
+                item.price * (1 - discount.percent_value / 100)
+              ),
               discount_id: item.discount_id,
             },
             { transaction: transaction }
           );
+          // Tính tổng tiền
+          // total_amount += detail.final_price * detail.quantity;
+          // //save
+          // orderCreate.total_amount = total_amount;
+          // await orderCreate.save({ transaction: transaction });
           //update batch
           minBatch.stock_quantity -= quantity;
           await minBatch.save({ transaction: transaction });
