@@ -39,9 +39,7 @@ const createOrder = (customer_id, orderDetails, address) => {
               order_id: order.order_id,
               batch_id: minBatch.batch_id,
               quantity: quantity,
-              final_price: parseInt(
-                book.sale_price * (1 - discount.percent_value / 100)
-              ),
+              final_price: item.price,
             },
             { transaction: t }
           );
@@ -141,7 +139,7 @@ const getOrderByEmailService = async (email) => {
                 },
               ],
               through: {
-                attributes: ["quantity", "final_price", "discount_id"], // Chỉ lấy final_price từ bảng trung gian 
+                attributes: ["quantity", "final_price", "discount_id"], // Chỉ lấy final_price từ bảng trung gian
               },
             },
           ],

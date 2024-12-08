@@ -76,9 +76,7 @@ const insertOrderService = async (orders) => {
               order_id: item.order_id,
               batch_id: minBatch.batch_id,
               quantity: quantity,
-              final_price: parseInt(
-                item.price * (1 - discount.percent_value / 100)
-              ),
+              final_price: item.price,
               discount_id: item.discount_id,
             },
             { transaction: transaction }
@@ -163,25 +161,24 @@ const updateQuantityOfOderDetailsInBatchesTableService = async (
         throw new Error(`Not enough stock for book_id ${book_id}`);
       }
     }
-  } catch (error) { }
+  } catch (error) {}
 };
 
 const getBooksService = async () => {
   try {
     const resBooks = await db.books.findAll({
-      attributes: [
-        "book_id", "title", "sale_price", "status_id"
-      ],
+      attributes: ["book_id", "title", "sale_price", "status_id"],
       include: [
         {
           model: db.bookstatus,
           as: "status",
-          attributes: ["status_name"]
-        }, {
+          attributes: ["status_name"],
+        },
+        {
           model: db.discounts,
           as: "discounts",
-        }
-      ]
+        },
+      ],
     });
     // Kiểm tra nếu resDiscount không tồn tại
     if (!resBooks) {
@@ -203,10 +200,10 @@ const getBooksService = async () => {
     );
     return { error: 3, message: "Data connection failed" };
   }
-}
+};
 
 module.exports = {
   getAllBillPromotionService,
   insertOrderService,
-  getBooksService
+  getBooksService,
 };
