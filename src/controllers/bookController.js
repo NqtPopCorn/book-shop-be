@@ -71,9 +71,7 @@ let handleUpdate = async (req, res) => {
     let id = req.params.bookId;
     let updates = req.body;
     let newFiles = req.files;
-    let deletedImages = updates.deletedImages
-      ? JSON.parse(updates.deletedImages)
-      : [];
+    let deletedImages = updates.deletedImages || [];
     let mainImageId = parseInt(updates.main_image_id);
     let discountIds = updates.discount_id;
     let authorIds = updates.author_id;
@@ -163,7 +161,7 @@ let handleCreate = async (req, res) => {
   try {
     let newBook = parseBody(req.body);
     let newImages = req.files;
-    console.log(newBook);
+    console.log("add book: ", newBook);
     let { book } = await bookService.createBook(newBook);
     //them anh
     newImages.forEach((image, index) => {
@@ -211,6 +209,7 @@ function parseBody(body) {
     publisher_id: parseInt(body.publisher_id),
     genre_id: parseInt(body.genre_id),
     discountIds: body.discount_id || [],
+    authorIds: body.author_id || [],
     cover_format_id: parseInt(body.cover_format_id),
   };
   return newBook;

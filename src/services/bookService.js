@@ -222,12 +222,17 @@ const getAllReferences = async () => {
 
 const createBook = async (newBook) => {
   return new Promise(async (resolve, reject) => {
+    let t = await db.sequelize.transaction();
     try {
-      let book = await db.books.create(newBook);
-      await book.setDiscounts(newBook.discountIds);
+      let book = await db.books.create(newBook, { transaction: t });
+      await book.setDiscounts(newBook.discountIds, { transaction: t });
+      await book.setAuthors(newBook.authorIds, { transaction: t });
       // await book.setAuthors(newBook.authorIds);
+      await t.commit();
       resolve({ book });
     } catch (error) {
+      console.error(error);
+      t.rollback();
       reject(error);
     }
   });
