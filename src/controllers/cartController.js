@@ -21,7 +21,8 @@ const getAllBillPromotionsController = async (req, res) => {
 const insertOrderController = async (req, res) => {
   try {
     const orders = req.body; // Extract the order data from the request body
-
+    let { order, orderDetails } = orders;
+    //tinh tong tien
     const respone = await insertOrderService(orders);
     // Send a response back to the client
     if (respone.error === 3) return res.status(503).json(respone);
