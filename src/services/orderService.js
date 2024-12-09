@@ -136,6 +136,13 @@ const getOrderByEmailService = async (email) => {
                   model: db.books,
                   as: "book",
                   attributes: ["title", "sale_price"],
+                  include: [
+                    {
+                      model: db.bookimages,
+                      as: "image",
+                      attributes: ["url"],
+                    },
+                  ],
                 },
               ],
               through: {
